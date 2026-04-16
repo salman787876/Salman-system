@@ -2,123 +2,129 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SmartPOS Ultra</title>
+<title>SmartPOS Dashboard</title>
 
 <style>
 *{
   margin:0;
   padding:0;
-  font-family:system-ui;
   box-sizing:border-box;
+  font-family:Inter, system-ui, Arial;
 }
 
 body{
-  background:#f2f4f8;
+  background:#f5f6f8;
   color:#111;
-}
-
-/* HEADER */
-header{
-  background:white;
-  padding:18px 25px;
   display:flex;
-  justify-content:space-between;
-  align-items:center;
-  border-bottom:1px solid #e6eaf0;
 }
 
-header h1{
-  font-size:18px;
-  font-weight:700;
-}
-
-/* LAYOUT */
-.container{
-  display:grid;
-  grid-template-columns:3fr 1fr;
-  gap:20px;
+/* SIDEBAR */
+.sidebar{
+  width:220px;
+  background:#111827;
+  color:white;
+  height:100vh;
   padding:20px;
 }
 
-/* PRODUCTS */
-.products{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:18px;
+.logo{
+  font-weight:700;
+  margin-bottom:30px;
+  color:#60a5fa;
 }
 
-/* CARD (IMPORTANT PART 🔥) */
+.menu{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  font-size:14px;
+  opacity:0.9;
+}
+
+/* MAIN */
+.main{
+  flex:1;
+  padding:20px;
+}
+
+/* TOP BAR */
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:20px;
+}
+
+.stats{
+  display:flex;
+  gap:10px;
+}
+
+.stat{
+  background:white;
+  padding:12px 15px;
+  border-radius:12px;
+  box-shadow:0 6px 15px rgba(0,0,0,0.05);
+  font-size:13px;
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
+}
+
+/* CARD */
 .card{
   background:white;
-  border-radius:16px;
-  overflow:hidden;
-  box-shadow:0 10px 25px rgba(0,0,0,0.06);
-  transition:0.25s;
+  border-radius:14px;
+  padding:12px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.06);
+  transition:0.2s;
 }
 
 .card:hover{
-  transform:translateY(-5px);
-  box-shadow:0 15px 30px rgba(0,0,0,0.1);
-}
-
-.card img{
-  width:100%;
-  height:140px;
-  object-fit:cover;
-}
-
-.card-body{
-  padding:12px;
-}
-
-.name{
-  font-weight:600;
-  margin-bottom:5px;
+  transform:translateY(-3px);
 }
 
 .price{
   color:#2563eb;
-  font-weight:700;
-  margin-bottom:10px;
+  font-weight:600;
+  margin:6px 0;
 }
 
-/* BUTTON */
 button{
   width:100%;
-  padding:10px;
+  padding:8px;
   border:none;
-  border-radius:12px;
-  cursor:pointer;
-  font-weight:600;
+  border-radius:10px;
   background:#2563eb;
   color:white;
-}
-
-button:hover{
-  background:#1d4ed8;
+  cursor:pointer;
 }
 
 /* CART */
 .cart{
-  background:white;
-  border-radius:16px;
-  padding:15px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.05);
-  height:fit-content;
-  position:sticky;
+  position:fixed;
+  right:20px;
   top:20px;
+  width:260px;
+  background:white;
+  padding:15px;
+  border-radius:14px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.08);
 }
 
 .item{
   display:flex;
   justify-content:space-between;
-  padding:8px 0;
+  font-size:13px;
   border-bottom:1px solid #eee;
+  padding:6px 0;
 }
 
 .total{
-  margin-top:12px;
-  font-size:18px;
+  margin-top:10px;
   font-weight:700;
   color:#2563eb;
 }
@@ -127,86 +133,85 @@ button:hover{
 
 <body>
 
-<header>
-<h1>🏪 SmartPOS Ultra System</h1>
-</header>
-
-<div class="container">
-
-<!-- PRODUCTS -->
-<div class="products" id="products"></div>
-
-<!-- CART -->
-<div class="cart">
-<h3>🛒 Cart</h3>
-<div id="cart"></div>
-<div class="total">Total: <span id="total">0</span> SAR</div>
-<button onclick="checkout()">Checkout</button>
+<div class="sidebar">
+<div class="logo">🏪 SmartPOS</div>
+<div class="menu">
+<div>Dashboard</div>
+<div>Products</div>
+<div>Sales</div>
+<div>Settings</div>
+</div>
 </div>
 
+<div class="main">
+
+<div class="topbar">
+<h2>Products</h2>
+<div class="stats">
+<div class="stat">💰 Today: 0 SAR</div>
+<div class="stat">🧾 Orders: 0</div>
+</div>
+</div>
+
+<div class="grid" id="products"></div>
+
+</div>
+
+<div class="cart">
+<h3>Cart</h3>
+<div id="cart"></div>
+<div class="total">Total: <span id="total">0</span></div>
 </div>
 
 <script>
 
-let products = [
-  {name:"Milk", price:5, img:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=500"},
-  {name:"Bread", price:3, img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=500"},
-  {name:"Eggs", price:12, img:"https://images.unsplash.com/photo-1506976785307-8732e854ad03?w=500"},
-  {name:"Rice", price:20, img:"https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500"},
-  {name:"Apple", price:8, img:"https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?w=500"},
-  {name:"Juice", price:6, img:"https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=500"}
+let products=[
+{name:"Milk",price:5},
+{name:"Bread",price:3},
+{name:"Eggs",price:12},
+{name:"Rice",price:20},
+{name:"Apple",price:8},
+{name:"Juice",price:6}
 ];
 
-let cart = [];
+let cart=[];
 
 function render(){
-  let div = document.getElementById("products");
-  div.innerHTML = "";
+let div=document.getElementById("products");
+div.innerHTML="";
 
-  products.forEach((p,i)=>{
-    div.innerHTML += `
-      <div class="card">
-        <img src="${p.img}">
-        <div class="card-body">
-          <div class="name">${p.name}</div>
-          <div class="price">${p.price} SAR</div>
-          <button onclick="add(${i})">Add to Cart</button>
-        </div>
-      </div>
-    `;
-  });
+products.forEach((p,i)=>{
+div.innerHTML+=`
+<div class="card">
+<h3>${p.name}</h3>
+<div class="price">${p.price} SAR</div>
+<button onclick="add(${i})">Add</button>
+</div>`;
+});
 
-  renderCart();
+renderCart();
 }
 
 function add(i){
-  cart.push(products[i]);
-  renderCart();
+cart.push(products[i]);
+renderCart();
 }
 
 function renderCart(){
-  let div = document.getElementById("cart");
-  div.innerHTML = "";
+let div=document.getElementById("cart");
+div.innerHTML="";
+let total=0;
 
-  let total = 0;
+cart.forEach(c=>{
+total+=c.price;
+div.innerHTML+=`
+<div class="item">
+<span>${c.name}</span>
+<span>${c.price}</span>
+</div>`;
+});
 
-  cart.forEach(c=>{
-    total += c.price;
-    div.innerHTML += `
-      <div class="item">
-        <span>${c.name}</span>
-        <span>${c.price}</span>
-      </div>
-    `;
-  });
-
-  document.getElementById("total").innerText = total;
-}
-
-function checkout(){
-  alert("Paid 💰 Total: " + document.getElementById("total").innerText);
-  cart = [];
-  renderCart();
+document.getElementById("total").innerText=total;
 }
 
 render();
