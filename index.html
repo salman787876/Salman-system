@@ -2,69 +2,91 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SmartPOS Dashboard</title>
+<title>SmartPOS Pro</title>
 
 <style>
 *{
   margin:0;
   padding:0;
+  font-family:system-ui;
   box-sizing:border-box;
-  font-family:Inter, system-ui, Arial;
 }
 
 body{
-  background:#f5f6f8;
+  background:linear-gradient(120deg,#eef1f6,#f7f8fa);
   color:#111;
+}
+
+/* LOGIN */
+.login{
+  height:100vh;
   display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.box{
+  background:white;
+  padding:20px;
+  border-radius:14px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.08);
+  width:280px;
+}
+
+input{
+  width:100%;
+  padding:10px;
+  margin:5px 0;
+  border:1px solid #ddd;
+  border-radius:10px;
+}
+
+button{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.orange{background:#ff7a00;color:black;}
+.gray{background:#111;color:white;}
+
+/* APP */
+.app{
+  display:none;
 }
 
 /* SIDEBAR */
 .sidebar{
   width:220px;
-  background:#111827;
-  color:white;
   height:100vh;
+  position:fixed;
+  left:0;
+  top:0;
+  background:#1c1c1f;
+  color:white;
   padding:20px;
 }
 
-.logo{
-  font-weight:700;
-  margin-bottom:30px;
-  color:#60a5fa;
+.sidebar h3{
+  color:#ff7a00;
+  margin-bottom:20px;
 }
 
-.menu{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
+.menu div{
+  margin:10px 0;
   font-size:14px;
-  opacity:0.9;
+  opacity:0.8;
+  cursor:pointer;
 }
 
 /* MAIN */
 .main{
-  flex:1;
+  margin-left:240px;
   padding:20px;
-}
-
-/* TOP BAR */
-.topbar{
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:20px;
-}
-
-.stats{
-  display:flex;
-  gap:10px;
-}
-
-.stat{
-  background:white;
-  padding:12px 15px;
-  border-radius:12px;
-  box-shadow:0 6px 15px rgba(0,0,0,0.05);
-  font-size:13px;
 }
 
 /* GRID */
@@ -74,33 +96,21 @@ body{
   gap:15px;
 }
 
-/* CARD */
 .card{
   background:white;
-  border-radius:14px;
   padding:12px;
+  border-radius:14px;
   box-shadow:0 6px 18px rgba(0,0,0,0.06);
-  transition:0.2s;
-}
-
-.card:hover{
-  transform:translateY(-3px);
 }
 
 .price{
-  color:#2563eb;
-  font-weight:600;
-  margin:6px 0;
+  color:#ff7a00;
+  font-weight:700;
 }
 
-button{
-  width:100%;
-  padding:8px;
-  border:none;
-  border-radius:10px;
-  background:#2563eb;
-  color:white;
-  cursor:pointer;
+.add{
+  background:#ff7a00;
+  color:black;
 }
 
 /* CART */
@@ -112,46 +122,58 @@ button{
   background:white;
   padding:15px;
   border-radius:14px;
-  box-shadow:0 6px 20px rgba(0,0,0,0.08);
+  box-shadow:0 6px 20px rgba(0,0,0,0.1);
 }
 
 .item{
   display:flex;
   justify-content:space-between;
-  font-size:13px;
   border-bottom:1px solid #eee;
-  padding:6px 0;
+  padding:5px 0;
 }
 
 .total{
   margin-top:10px;
+  color:#ff7a00;
   font-weight:700;
-  color:#2563eb;
+}
+
+/* LOGIN ERROR */
+.err{
+  color:red;
+  font-size:12px;
 }
 </style>
 </head>
 
 <body>
 
+<!-- LOGIN -->
+<div class="login" id="login">
+  <div class="box">
+    <h3>SmartPOS Login</h3>
+    <input id="user" placeholder="Username">
+    <input id="pass" type="password" placeholder="Password">
+    <div class="err" id="err"></div>
+    <button class="gray" onclick="login()">Login</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+
 <div class="sidebar">
-<div class="logo">🏪 SmartPOS</div>
+<h3>🏪 SmartPOS</h3>
 <div class="menu">
-<div>Dashboard</div>
-<div>Products</div>
-<div>Sales</div>
-<div>Settings</div>
+<div onclick="show('pos')">POS</div>
+<div onclick="show('reports')">Reports</div>
+<div onclick="logout()">Logout</div>
 </div>
 </div>
 
 <div class="main">
 
-<div class="topbar">
-<h2>Products</h2>
-<div class="stats">
-<div class="stat">💰 Today: 0 SAR</div>
-<div class="stat">🧾 Orders: 0</div>
-</div>
-</div>
+<h2 id="title">POS System</h2>
 
 <div class="grid" id="products"></div>
 
@@ -161,9 +183,19 @@ button{
 <h3>Cart</h3>
 <div id="cart"></div>
 <div class="total">Total: <span id="total">0</span></div>
+<button class="orange" onclick="checkout()">Checkout & Print</button>
+</div>
+
 </div>
 
 <script>
+
+let users={
+"salman":{pass:"1234",role:"admin"},
+"thnayan":{pass:"1234",role:"cashier"}
+};
+
+let currentUser=null;
 
 let products=[
 {name:"Milk",price:5},
@@ -175,7 +207,24 @@ let products=[
 ];
 
 let cart=[];
+let logs=[];
 
+/* LOGIN */
+function login(){
+let u=user.value;
+let p=pass.value;
+
+if(users[u] && users[u].pass===p){
+currentUser={name:u,role:users[u].role};
+document.getElementById("login").style.display="none";
+document.getElementById("app").style.display="block";
+render();
+}else{
+err.innerText="Invalid login";
+}
+}
+
+/* RENDER */
 function render(){
 let div=document.getElementById("products");
 div.innerHTML="";
@@ -185,18 +234,20 @@ div.innerHTML+=`
 <div class="card">
 <h3>${p.name}</h3>
 <div class="price">${p.price} SAR</div>
-<button onclick="add(${i})">Add</button>
+<button class="add" onclick="add(${i})">Add</button>
 </div>`;
 });
 
 renderCart();
 }
 
+/* ADD */
 function add(i){
 cart.push(products[i]);
 renderCart();
 }
 
+/* CART */
 function renderCart(){
 let div=document.getElementById("cart");
 div.innerHTML="";
@@ -214,7 +265,46 @@ div.innerHTML+=`
 document.getElementById("total").innerText=total;
 }
 
-render();
+/* CHECKOUT + INVOICE */
+function checkout(){
+let total=document.getElementById("total").innerText;
+
+let invoice={
+user:currentUser.name,
+role:currentUser.role,
+items:[...cart],
+total:Number(total),
+time:new Date().toLocaleString()
+};
+
+logs.push(invoice);
+
+let win=window.open("");
+win.document.write(`
+<h2>🧾 SmartPOS Invoice</h2>
+<p>User: ${invoice.user}</p>
+<p>Time: ${invoice.time}</p>
+<hr>
+${cart.map(c=>`<p>${c.name} - ${c.price}</p>`).join("")}
+<hr>
+<h3>Total: ${total} SAR</h3>
+`);
+
+win.print();
+
+cart=[];
+renderCart();
+}
+
+/* NAV */
+function show(page){
+alert("Demo section: " + page);
+}
+
+/* LOGOUT */
+function logout(){
+location.reload();
+}
 
 </script>
 
