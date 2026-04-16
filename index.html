@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SmartPOS Pro</title>
+<title>SmartPOS Ultra</title>
 
 <style>
 *{
@@ -13,51 +13,52 @@
 }
 
 body{
-  background:#0f0f10;
-  color:white;
+  background:#f2f4f8;
+  color:#111;
 }
 
 /* HEADER */
 header{
-  background:#151517;
-  padding:15px 20px;
+  background:white;
+  padding:18px 25px;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  border-bottom:2px solid #ff7a00;
+  border-bottom:1px solid #e6eaf0;
 }
 
 header h1{
   font-size:18px;
-  color:#ff7a00;
+  font-weight:700;
 }
 
 /* LAYOUT */
 .container{
   display:grid;
-  grid-template-columns:2.5fr 1fr;
-  gap:15px;
-  padding:15px;
+  grid-template-columns:3fr 1fr;
+  gap:20px;
+  padding:20px;
 }
 
-/* PRODUCTS GRID */
+/* PRODUCTS */
 .products{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:15px;
+  gap:18px;
 }
 
-/* CARD */
+/* CARD (IMPORTANT PART 🔥) */
 .card{
-  background:#1a1a1d;
+  background:white;
   border-radius:16px;
   overflow:hidden;
-  box-shadow:0 6px 18px rgba(0,0,0,0.4);
-  transition:0.2s;
+  box-shadow:0 10px 25px rgba(0,0,0,0.06);
+  transition:0.25s;
 }
 
 .card:hover{
-  transform:translateY(-4px);
+  transform:translateY(-5px);
+  box-shadow:0 15px 30px rgba(0,0,0,0.1);
 }
 
 .card img{
@@ -67,77 +68,59 @@ header h1{
 }
 
 .card-body{
-  padding:10px;
+  padding:12px;
 }
 
 .name{
-  font-weight:bold;
+  font-weight:600;
+  margin-bottom:5px;
 }
 
 .price{
-  color:#ff7a00;
-  margin-top:5px;
-  font-weight:bold;
+  color:#2563eb;
+  font-weight:700;
+  margin-bottom:10px;
 }
 
+/* BUTTON */
 button{
   width:100%;
-  margin-top:10px;
   padding:10px;
   border:none;
-  border-radius:10px;
+  border-radius:12px;
   cursor:pointer;
-  font-weight:bold;
+  font-weight:600;
+  background:#2563eb;
+  color:white;
 }
 
-.add{
-  background:#ff7a00;
-  color:black;
-}
-
-.add:hover{
-  background:#ff8c1a;
+button:hover{
+  background:#1d4ed8;
 }
 
 /* CART */
 .cart{
-  background:#1a1a1d;
-  padding:15px;
+  background:white;
   border-radius:16px;
+  padding:15px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.05);
   height:fit-content;
   position:sticky;
-  top:10px;
+  top:20px;
 }
 
 .item{
   display:flex;
   justify-content:space-between;
-  padding:6px 0;
-  border-bottom:1px solid #333;
+  padding:8px 0;
+  border-bottom:1px solid #eee;
 }
 
 .total{
-  margin-top:10px;
+  margin-top:12px;
   font-size:18px;
-  font-weight:bold;
-  color:#ff7a00;
-}
-
-/* ADMIN */
-.admin{
-  margin:15px;
-  background:#1a1a1d;
-  padding:15px;
-  border-radius:16px;
-  border:1px solid #333;
-}
-
-input{
-  padding:10px;
-  margin:5px;
-  border:none;
-  border-radius:10px;
-  width:200px;
+  font-weight:700;
+  color:#2563eb;
 }
 </style>
 </head>
@@ -145,7 +128,7 @@ input{
 <body>
 
 <header>
-<h1>🏪 SmartPOS Pro</h1>
+<h1>🏪 SmartPOS Ultra System</h1>
 </header>
 
 <div class="container">
@@ -157,69 +140,25 @@ input{
 <div class="cart">
 <h3>🛒 Cart</h3>
 <div id="cart"></div>
-
 <div class="total">Total: <span id="total">0</span> SAR</div>
-
-<button class="add" onclick="checkout()">Checkout</button>
+<button onclick="checkout()">Checkout</button>
 </div>
 
-</div>
-
-<!-- ADMIN -->
-<div class="admin">
-<h3>➕ Add Product</h3>
-
-<input id="name" placeholder="Product name">
-<input id="price" type="number" placeholder="Price">
-<input id="img" placeholder="Image URL">
-
-<button class="add" onclick="addProduct()">Add Product</button>
 </div>
 
 <script>
 
-let products = JSON.parse(localStorage.getItem("products")) || [
-  {
-    name:"Milk",
-    price:5,
-    img:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=500"
-  },
-  {
-    name:"Bread",
-    price:3,
-    img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=500"
-  },
-  {
-    name:"Eggs",
-    price:12,
-    img:"https://images.unsplash.com/photo-1506976785307-8732e854ad03?w=500"
-  },
-  {
-    name:"Rice",
-    price:20,
-    img:"https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500"
-  },
-  {
-    name:"Apple",
-    price:8,
-    img:"https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?w=500"
-  },
-  {
-    name:"Juice",
-    price:6,
-    img:"https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=500"
-  }
+let products = [
+  {name:"Milk", price:5, img:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=500"},
+  {name:"Bread", price:3, img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=500"},
+  {name:"Eggs", price:12, img:"https://images.unsplash.com/photo-1506976785307-8732e854ad03?w=500"},
+  {name:"Rice", price:20, img:"https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500"},
+  {name:"Apple", price:8, img:"https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?w=500"},
+  {name:"Juice", price:6, img:"https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=500"}
 ];
 
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let cart = [];
 
-/* SAVE */
-function save(){
-  localStorage.setItem("products", JSON.stringify(products));
-  localStorage.setItem("cart", JSON.stringify(cart));
-}
-
-/* PRODUCTS */
 function render(){
   let div = document.getElementById("products");
   div.innerHTML = "";
@@ -231,7 +170,7 @@ function render(){
         <div class="card-body">
           <div class="name">${p.name}</div>
           <div class="price">${p.price} SAR</div>
-          <button class="add" onclick="add(${i})">Add to Cart</button>
+          <button onclick="add(${i})">Add to Cart</button>
         </div>
       </div>
     `;
@@ -240,23 +179,19 @@ function render(){
   renderCart();
 }
 
-/* ADD */
 function add(i){
   cart.push(products[i]);
-  save();
   renderCart();
 }
 
-/* CART */
 function renderCart(){
   let div = document.getElementById("cart");
   div.innerHTML = "";
 
   let total = 0;
 
-  cart.forEach((c)=>{
+  cart.forEach(c=>{
     total += c.price;
-
     div.innerHTML += `
       <div class="item">
         <span>${c.name}</span>
@@ -268,30 +203,10 @@ function renderCart(){
   document.getElementById("total").innerText = total;
 }
 
-/* CHECKOUT */
 function checkout(){
-  alert("Payment Done 💰 Total: " + document.getElementById("total").innerText);
+  alert("Paid 💰 Total: " + document.getElementById("total").innerText);
   cart = [];
-  save();
   renderCart();
-}
-
-/* ADD PRODUCT */
-function addProduct(){
-  let name = document.getElementById("name").value;
-  let price = document.getElementById("price").value;
-  let img = document.getElementById("img").value;
-
-  if(!name || !price || !img) return;
-
-  products.push({
-    name,
-    price:Number(price),
-    img
-  });
-
-  save();
-  render();
 }
 
 render();
