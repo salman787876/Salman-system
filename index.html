@@ -1,1 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Grocery System</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #111;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
 
+    input, button {
+      padding: 10px;
+      margin: 5px;
+      border-radius: 5px;
+      border: none;
+    }
+
+    button {
+      cursor: pointer;
+      background: orange;
+      font-weight: bold;
+    }
+
+    table {
+      margin: auto;
+      margin-top: 20px;
+      width: 60%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #444;
+      padding: 10px;
+    }
+
+    th {
+      background: #222;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🏪 Grocery System</h1>
+
+<input id="name" placeholder="Product Name">
+<input id="price" type="number" placeholder="Price">
+<button onclick="addProduct()">Add</button>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Price</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody id="list"></tbody>
+</table>
+
+<h2>Total: <span id="total">0</span> SAR</h2>
+
+<script>
+let products = [];
+
+function addProduct() {
+  let name = document.getElementById("name").value;
+  let price = document.getElementById("price").value;
+
+  if (!name || !price) return;
+
+  products.push({ name, price: Number(price) });
+
+  document.getElementById("name").value = "";
+  document.getElementById("price").value = "";
+
+  render();
+}
+
+function deleteProduct(index) {
+  products.splice(index, 1);
+  render();
+}
+
+function render() {
+  let list = document.getElementById("list");
+  list.innerHTML = "";
+
+  let total = 0;
+
+  products.forEach((p, i) => {
+    total += p.price;
+
+    list.innerHTML += `
+      <tr>
+        <td>${p.name}</td>
+        <td>${p.price}</td>
+        <td><button onclick="deleteProduct(${i})">Delete</button></td>
+      </tr>
+    `;
+  });
+
+  document.getElementById("total").innerText = total;
+}
+</script>
+
+</body>
+</html>
