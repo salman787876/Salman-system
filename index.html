@@ -2,60 +2,56 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SmartPOS System</title>
+<title>SmartPOS Pro</title>
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  font-family:system-ui;
-  box-sizing:border-box;
-}
-
 body{
-  background:#f5f8ff;
+  margin:0;
+  font-family:system-ui;
+  background:#f4f7ff;
 }
 
 /* HEADER */
 header{
   background:#1e66ff;
   color:white;
-  padding:15px 20px;
+  padding:14px 20px;
   display:flex;
   justify-content:space-between;
   align-items:center;
 }
 
-header h1{
-  font-size:18px;
+header button{
+  margin-left:8px;
+  border:none;
+  padding:6px 10px;
+  border-radius:8px;
+  cursor:pointer;
 }
 
 /* LAYOUT */
-.wrapper{
+.container{
   display:grid;
-  grid-template-columns:2fr 1fr;
-  gap:20px;
-  padding:20px;
+  grid-template-columns:2.5fr 1fr;
+  gap:15px;
+  padding:15px;
 }
 
 /* PRODUCTS */
 .products{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:15px;
+  gap:12px;
 }
 
 .card{
   background:white;
-  padding:15px;
-  border-radius:12px;
-  box-shadow:0 5px 15px rgba(0,0,0,0.05);
-  transition:0.2s;
+  padding:12px;
+  border-radius:14px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.06);
 }
 
-.card:hover{
-  transform:translateY(-3px);
-}
+.card h3{margin:0;}
 
 .price{
   color:#1e66ff;
@@ -64,111 +60,125 @@ header h1{
 }
 
 button{
-  width:100%;
-  padding:10px;
-  border:none;
-  border-radius:10px;
   cursor:pointer;
-  font-weight:bold;
 }
 
 .add{
+  width:100%;
+  padding:8px;
+  border:none;
+  border-radius:10px;
   background:#1e66ff;
   color:white;
-}
-
-.add:hover{
-  background:#0f55e6;
 }
 
 /* CART */
 .cart{
   background:white;
-  padding:15px;
-  border-radius:12px;
-  box-shadow:0 5px 15px rgba(0,0,0,0.05);
+  padding:12px;
+  border-radius:14px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.06);
   height:fit-content;
 }
 
 .item{
   display:flex;
   justify-content:space-between;
-  padding:8px 0;
+  padding:6px 0;
   border-bottom:1px solid #eee;
 }
 
 .total{
-  margin-top:10px;
   font-size:18px;
   font-weight:bold;
+  margin-top:10px;
   color:#1e66ff;
 }
 
-/* ADMIN */
-.admin{
-  margin:20px;
-  background:white;
-  padding:15px;
-  border-radius:12px;
-  box-shadow:0 5px 15px rgba(0,0,0,0.05);
+.small{
+  font-size:12px;
+  color:gray;
 }
 
-input{
-  padding:10px;
-  margin:5px;
-  border:1px solid #ddd;
-  border-radius:8px;
+/* SETTINGS */
+.settings{
+  margin:15px;
+  background:white;
+  padding:12px;
+  border-radius:14px;
 }
 </style>
-
 </head>
 
 <body>
 
 <header>
-<h1>🏪 SmartPOS System</h1>
+<div id="title">🏪 SmartPOS Pro</div>
+
+<div>
+<button onclick="toggleLang()">🌍</button>
+<button onclick="printReceipt()">🧾</button>
+</div>
 </header>
 
-<div class="wrapper">
+<div class="container">
 
 <!-- PRODUCTS -->
 <div class="products" id="products"></div>
 
 <!-- CART -->
 <div class="cart">
-<h3>🛒 Cart</h3>
+<h3 id="cartTitle">🛒 Cart</h3>
 <div id="cart"></div>
-<div class="total">Total: <span id="total">0</span> SAR</div>
-<button onclick="checkout()" class="add">Checkout</button>
+<div class="total">Total: <span id="total">0</span></div>
+
+<button class="add" onclick="checkout()">Checkout</button>
+<div class="small" id="sales"></div>
 </div>
 
 </div>
 
-<!-- ADMIN -->
-<div class="admin">
-<h3>➕ Add Product</h3>
+<!-- SETTINGS -->
+<div class="settings">
+<h3 id="settingsTitle">⚙️ Settings</h3>
+
 <input id="name" placeholder="Product name">
 <input id="price" type="number" placeholder="Price">
-<button onclick="addProduct()" class="add">Add</button>
+<button class="add" onclick="addProduct()">Add</button>
 </div>
 
 <script>
+
+let lang = localStorage.getItem("lang") || "en";
 
 let products = JSON.parse(localStorage.getItem("products")) || [
   {name:"Milk", price:5},
   {name:"Bread", price:3},
   {name:"Eggs", price:12},
   {name:"Rice", price:20},
-  {name:"Apple", price:8},
-  {name:"Juice", price:6}
+  {name:"Apple", price:8}
 ];
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let sales = JSON.parse(localStorage.getItem("sales")) || [];
 
 /* SAVE */
 function save(){
   localStorage.setItem("products", JSON.stringify(products));
   localStorage.setItem("cart", JSON.stringify(cart));
+  localStorage.setItem("sales", JSON.stringify(sales));
+}
+
+/* LANGUAGE */
+function toggleLang(){
+  lang = lang === "en" ? "ar" : "en";
+  localStorage.setItem("lang", lang);
+  render();
+}
+
+/* TRANSLATE */
+function t(en, ar){
+  return lang === "en" ? en : ar;
 }
 
 /* PRODUCTS */
@@ -176,20 +186,24 @@ function render(){
   let div = document.getElementById("products");
   div.innerHTML = "";
 
+  document.getElementById("cartTitle").innerText = t("Cart", "السلة");
+  document.getElementById("settingsTitle").innerText = t("Settings", "الإعدادات");
+
   products.forEach((p,i)=>{
     div.innerHTML += `
       <div class="card">
         <h3>${p.name}</h3>
         <div class="price">${p.price} SAR</div>
-        <button class="add" onclick="add(${i})">Add</button>
+        <button class="add" onclick="add(${i})">${t("Add", "إضافة")}</button>
       </div>
     `;
   });
 
   renderCart();
+  renderSales();
 }
 
-/* ADD TO CART */
+/* ADD CART */
 function add(i){
   cart.push(products[i]);
   save();
@@ -203,7 +217,7 @@ function renderCart(){
 
   let total = 0;
 
-  cart.forEach((c,i)=>{
+  cart.forEach((c)=>{
     total += c.price;
 
     div.innerHTML += `
@@ -219,10 +233,49 @@ function renderCart(){
 
 /* CHECKOUT */
 function checkout(){
-  alert("Paid 💰 Total: " + document.getElementById("total").innerText);
+  let total = document.getElementById("total").innerText;
+
+  let sale = {
+    items:[...cart],
+    total:Number(total),
+    date:new Date().toLocaleString()
+  };
+
+  sales.push(sale);
   cart = [];
+
   save();
   renderCart();
+  renderSales();
+}
+
+/* SALES REPORT */
+function renderSales(){
+  let div = document.getElementById("sales");
+
+  let todayTotal = sales.reduce((sum,s)=>sum + s.total,0);
+
+  div.innerHTML = `
+    <hr>
+    <div>📊 ${t("Daily Sales", "مبيعات اليوم")}: ${todayTotal} SAR</div>
+    <div class="small">${sales.length} transactions</div>
+  `;
+}
+
+/* PRINT RECEIPT */
+function printReceipt(){
+  let total = document.getElementById("total").innerText;
+
+  let win = window.open("");
+  win.document.write(`
+    <h2>🧾 SmartPOS Receipt</h2>
+    <p>Date: ${new Date().toLocaleString()}</p>
+    <hr>
+    ${cart.map(c=>`<p>${c.name} - ${c.price}</p>`).join("")}
+    <hr>
+    <h3>Total: ${total} SAR</h3>
+  `);
+  win.print();
 }
 
 /* ADD PRODUCT */
