@@ -2,108 +2,157 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Smart Supermarket POS</title>
+<title>Smart POS System</title>
 
 <style>
-body{
+*{
   margin:0;
-  font-family:Arial;
-  background:#f4f8ff;
-  color:#1a1a1a;
+  padding:0;
+  box-sizing:border-box;
+  font-family:system-ui, Arial;
+}
+
+body{
+  background:#f6f9ff;
+  color:#111;
 }
 
 /* HEADER */
 header{
-  background:#1e66ff;
-  color:white;
-  padding:15px;
+  background:white;
+  padding:18px 25px;
   display:flex;
   justify-content:space-between;
   align-items:center;
+  border-bottom:1px solid #e8eefc;
+  position:sticky;
+  top:0;
 }
 
-header h1{
-  margin:0;
-  font-size:20px;
+.logo{
+  font-size:18px;
+  font-weight:700;
+  color:#1e66ff;
 }
 
 /* LAYOUT */
-.container{
-  display:flex;
-  gap:15px;
-  padding:15px;
+.wrapper{
+  display:grid;
+  grid-template-columns: 2.5fr 1fr;
+  gap:20px;
+  padding:20px;
 }
 
-/* PRODUCTS */
+/* PRODUCTS GRID */
 .products{
-  flex:3;
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:10px;
+  gap:15px;
 }
 
+/* PRODUCT CARD */
 .card{
   background:white;
-  border-radius:10px;
-  padding:10px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+  padding:15px;
+  border-radius:14px;
+  box-shadow:0 4px 18px rgba(30,102,255,0.08);
+  border:1px solid #eef3ff;
+  transition:0.2s;
+}
+
+.card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 6px 25px rgba(30,102,255,0.15);
 }
 
 .card h3{
-  margin:5px 0;
+  margin-bottom:5px;
 }
 
 .price{
   color:#1e66ff;
-  font-weight:bold;
+  font-weight:700;
+  margin-bottom:10px;
+}
+
+.stock{
+  font-size:13px;
+  color:#666;
+  margin-bottom:10px;
 }
 
 button{
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.btn{
   background:#1e66ff;
   color:white;
-  border:none;
-  padding:8px;
-  width:100%;
-  border-radius:6px;
-  cursor:pointer;
+}
+
+.btn:hover{
+  background:#0f55e6;
 }
 
 /* CART */
 .cart{
-  flex:1;
   background:white;
-  padding:10px;
-  border-radius:10px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+  padding:15px;
+  border-radius:14px;
+  box-shadow:0 4px 18px rgba(0,0,0,0.06);
   height:fit-content;
+  position:sticky;
+  top:90px;
+}
+
+.cart h2{
+  margin-bottom:10px;
 }
 
 .item{
   display:flex;
   justify-content:space-between;
+  padding:8px 0;
   border-bottom:1px solid #eee;
-  padding:5px 0;
+  font-size:14px;
 }
 
 .total{
+  margin-top:15px;
   font-size:18px;
-  margin-top:10px;
+  font-weight:700;
   color:#1e66ff;
 }
 
 /* ADMIN */
 .admin{
-  margin:15px;
-  padding:15px;
+  margin:20px;
   background:white;
-  border-radius:10px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+  padding:15px;
+  border-radius:14px;
+  box-shadow:0 4px 18px rgba(0,0,0,0.05);
 }
 
 input{
-  padding:8px;
+  padding:10px;
   margin:5px;
-  width:200px;
+  border:1px solid #ddd;
+  border-radius:10px;
+}
+
+.small{
+  width:150px;
+}
+
+.admin button{
+  width:auto;
+  background:#1e66ff;
+  color:white;
 }
 </style>
 </head>
@@ -111,31 +160,35 @@ input{
 <body>
 
 <header>
-<h1>🏪 Smart Supermarket POS</h1>
+<div class="logo">🏪 Smart POS System</div>
 </header>
 
-<div class="container">
+<div class="wrapper">
 
 <!-- PRODUCTS -->
 <div class="products" id="products"></div>
 
 <!-- CART -->
 <div class="cart">
-<h3>🛒 Cart</h3>
+<h2>🛒 Cart</h2>
 <div id="cart"></div>
-<div class="total">Total: <span id="total">0</span> SAR</div>
-<button onclick="checkout()">Checkout</button>
+
+<div class="total">
+Total: <span id="total">0</span> SAR
+</div>
+
+<button class="btn" onclick="checkout()">Checkout</button>
 </div>
 
 </div>
 
 <!-- ADMIN -->
 <div class="admin">
-<h3>➕ Add Product (Admin)</h3>
+<h3>➕ Admin Panel</h3>
 
 <input id="name" placeholder="Product name">
-<input id="price" type="number" placeholder="Price">
-<input id="qty" type="number" placeholder="Qty">
+<input id="price" class="small" type="number" placeholder="Price">
+<input id="stock" class="small" type="number" placeholder="Stock">
 
 <button onclick="addProduct()">Add Product</button>
 </div>
@@ -143,24 +196,23 @@ input{
 <script>
 
 let products = JSON.parse(localStorage.getItem("products")) || [
-  {name:"Milk", price:5, qty:10},
-  {name:"Bread", price:3, qty:15},
-  {name:"Eggs", price:12, qty:20},
-  {name:"Rice", price:20, qty:8},
-  {name:"Apple", price:8, qty:25},
-  {name:"Juice", price:6, qty:18}
+  {name:"Milk", price:5, stock:12},
+  {name:"Bread", price:3, stock:20},
+  {name:"Eggs", price:12, stock:15},
+  {name:"Rice 1kg", price:18, stock:10},
+  {name:"Apple", price:8, stock:25},
+  {name:"Juice", price:6, stock:18}
 ];
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-/* SAVE */
 function save(){
   localStorage.setItem("products", JSON.stringify(products));
   localStorage.setItem("cart", JSON.stringify(cart));
 }
 
-/* RENDER PRODUCTS */
-function renderProducts(){
+/* PRODUCTS */
+function render(){
   let div = document.getElementById("products");
   div.innerHTML = "";
 
@@ -168,24 +220,25 @@ function renderProducts(){
     div.innerHTML += `
       <div class="card">
         <h3>${p.name}</h3>
-        <p class="price">${p.price} SAR</p>
-        <p>Stock: ${p.qty}</p>
-        <button onclick="addToCart(${i})">Add</button>
+        <div class="price">${p.price} SAR</div>
+        <div class="stock">Stock: ${p.stock}</div>
+        <button class="btn" onclick="add(${i})">Add to Cart</button>
       </div>
     `;
   });
+
+  renderCart();
 }
 
-/* ADD TO CART */
-function addToCart(i){
-  if(products[i].qty <= 0) return alert("Out of stock!");
+/* ADD */
+function add(i){
+  if(products[i].stock <= 0) return alert("Out of stock");
 
-  products[i].qty--;
+  products[i].stock--;
   cart.push(products[i]);
 
   save();
-  renderProducts();
-  renderCart();
+  render();
 }
 
 /* CART */
@@ -195,7 +248,7 @@ function renderCart(){
 
   let total = 0;
 
-  cart.forEach((c,i)=>{
+  cart.forEach((c)=>{
     total += c.price;
 
     div.innerHTML += `
@@ -211,32 +264,31 @@ function renderCart(){
 
 /* CHECKOUT */
 function checkout(){
-  alert("Payment Done 💙 Total: " + document.getElementById("total").innerText);
+  alert("Payment Successful 💳 Total: " + document.getElementById("total").innerText);
   cart = [];
   save();
-  renderCart();
+  render();
 }
 
-/* ADMIN ADD */
+/* ADMIN */
 function addProduct(){
   let name = document.getElementById("name").value;
   let price = document.getElementById("price").value;
-  let qty = document.getElementById("qty").value;
+  let stock = document.getElementById("stock").value;
 
-  if(!name || !price || !qty) return;
+  if(!name || !price || !stock) return;
 
   products.push({
     name,
     price:Number(price),
-    qty:Number(qty)
+    stock:Number(stock)
   });
 
   save();
-  renderProducts();
+  render();
 }
 
-renderProducts();
-renderCart();
+render();
 
 </script>
 
