@@ -3,76 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بقالتي برو - نظام البقالة الاحترافي</title>
+    <title>بقالة سلمان - نظام إدارة البقالة الاحترافي</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;900&display=swap');
-        
-        * { font-family: 'Cairo', system-ui, sans-serif; }
-        
-        .sidebar { transition: all 0.3s ease; }
-        .nav-item { transition: all 0.2s ease; }
-        .nav-item:hover { background-color: #10b981; transform: translateX(-5px); }
+        * { font-family: 'Cairo', sans-serif; }
+        .nav-item { transition: all 0.3s; }
+        .nav-item:hover { background-color: #10b981; color: white; transform: translateX(-8px); }
         .page { display: none; }
         .page.active { display: block; }
-        
-        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
-        
-        .receipt {
-            width: 320px;
-            font-size: 13px;
-            background: white;
-            color: black;
-            padding: 20px;
-            border: 2px dashed #000;
-            margin: 0 auto;
-            box-shadow: 0 10px 15px rgba(0,0,0,0.3);
-        }
-        
-        .product-card {
-            transition: all 0.2s;
-        }
-        .product-card:hover {
-            transform: scale(1.04);
-            box-shadow: 0 10px 15px rgba(16, 185, 129, 0.3);
-        }
+        .receipt { width: 320px; background: white; color: black; padding: 20px; border: 3px dashed #000; margin: 0 auto; font-size: 14px; }
     </style>
 </head>
-<body class="bg-zinc-950 text-white overflow-hidden">
+<body class="bg-zinc-950 text-white">
 
-    <!-- صفحة تسجيل الدخول -->
+    <!-- صفحة الدخول -->
     <div id="login-page" class="fixed inset-0 bg-zinc-950 flex items-center justify-center z-50">
-        <div class="bg-zinc-900 rounded-3xl p-10 w-full max-w-md shadow-2xl border border-emerald-500/20">
-            <div class="flex justify-center mb-6">
-                <div class="w-20 h-20 bg-emerald-500 rounded-2xl flex items-center justify-center">
-                    <i class="fa-solid fa-store text-4xl text-white"></i>
-                </div>
-            </div>
-            <h1 class="text-4xl font-black text-center mb-2">بقالتي برو</h1>
-            <p class="text-center text-zinc-400 mb-10">نظام إدارة البقالات الاحترافي</p>
-            
-            <div class="space-y-6">
-                <div>
-                    <label class="block text-sm text-zinc-400 mb-2">اسم المستخدم</label>
-                    <input id="username" type="text" value="salman" 
-                           class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 focus:outline-none focus:border-emerald-500 text-lg">
-                </div>
-                <div>
-                    <label class="block text-sm text-zinc-400 mb-2">كلمة المرور</label>
-                    <input id="password" type="password" value="1234" 
-                           class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 focus:outline-none focus:border-emerald-500 text-lg">
-                </div>
-                <button onclick="login()" 
-                        class="w-full bg-emerald-600 hover:bg-emerald-700 py-5 rounded-3xl font-bold text-xl transition-all active:scale-95">
-                    تسجيل الدخول
-                </button>
+        <div class="bg-zinc-900 rounded-3xl p-12 w-full max-w-md border border-emerald-600">
+            <div class="text-center mb-10">
+                <div class="mx-auto w-24 h-24 bg-emerald-600 rounded-2xl flex items-center justify-center text-5xl mb-6">🛒</div>
+                <h1 class="text-4xl font-black">بقالة سلمان</h1>
+                <p class="text-emerald-400 text-xl mt-2">نظام إدارة البقالة الاحترافي</p>
             </div>
             
-            <div class="mt-8 text-center text-xs text-zinc-500">
-                <p>مدير النظام: <span class="font-bold text-emerald-400">salman / 1234</span></p>
-                <p>موظف: <span class="font-bold text-emerald-400">azoz / 1234</span></p>
+            <input id="username" type="text" placeholder="اسم المستخدم" value="salman"
+                   class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-5 text-lg mb-4 focus:border-emerald-500 outline-none">
+            <input id="password" type="password" placeholder="كلمة المرور" value="1234"
+                   class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-5 text-lg mb-6 focus:border-emerald-500 outline-none">
+            
+            <button onclick="login()" 
+                    class="w-full bg-emerald-600 hover:bg-emerald-700 py-5 rounded-3xl text-xl font-bold transition">
+                تسجيل الدخول
+            </button>
+            
+            <div class="mt-8 text-center text-sm text-zinc-500">
+                <p>سلمان (المدير): <span class="font-bold text-emerald-400">salman / 1234</span></p>
+                <p>عزوز (كاشير): <span class="font-bold text-emerald-400">azoz / 1234</span></p>
             </div>
         </div>
     </div>
@@ -81,190 +49,116 @@
     <div id="main-app" class="hidden flex flex-col h-screen">
 
         <!-- الهيدر -->
-        <header class="bg-emerald-700 text-white px-6 py-4 flex items-center justify-between shadow-xl">
+        <header class="bg-emerald-700 px-8 py-5 flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <button onclick="logout()" 
-                        class="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-2xl flex items-center gap-2 font-medium text-sm">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                    خروج
+                <button onclick="logout()" class="bg-red-600 px-6 py-3 rounded-2xl flex items-center gap-2 font-medium">
+                    <i class="fa-solid fa-right-from-bracket"></i> خروج
                 </button>
-                <div class="bg-white/20 px-5 py-2 rounded-3xl flex items-center gap-3">
-                    <i class="fa-solid fa-user text-xl"></i>
+                <div class="bg-white/20 px-6 py-3 rounded-3xl flex items-center gap-3">
+                    <i class="fa-solid fa-user"></i>
                     <div>
-                        <div id="header-user-name" class="font-bold"></div>
-                        <div id="header-user-role" class="text-xs opacity-75"></div>
+                        <div id="header-name" class="font-bold"></div>
+                        <div id="header-role" class="text-xs opacity-75"></div>
                     </div>
                 </div>
             </div>
-            
-            <div class="flex items-center gap-8">
-                <div id="current-date" class="font-medium text-lg"></div>
-                <div class="flex items-center gap-2 text-2xl">
-                    <i class="fa-solid fa-store"></i>
-                    <span class="font-black tracking-wider">بقالتي</span>
-                </div>
+            <div class="text-2xl font-black flex items-center gap-3">
+                <i class="fa-solid fa-store"></i>
+                بقالة سلمان
             </div>
+            <div id="current-date" class="font-medium"></div>
         </header>
 
         <div class="flex flex-1 overflow-hidden">
 
-            <!-- الشريط الجانبي -->
-            <div class="w-72 bg-zinc-900 border-l border-zinc-800 flex flex-col">
-                <div class="p-6 border-b border-zinc-800">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 bg-emerald-500 rounded-2xl flex items-center justify-center text-2xl">🛒</div>
-                        <div>
-                            <div class="font-bold text-xl">بقالتي برو</div>
-                            <div class="text-emerald-400 text-xs">نظام متكامل</div>
-                        </div>
+            <!-- القائمة الجانبية -->
+            <div class="w-72 bg-zinc-900 border-l border-zinc-700 p-4 flex flex-col">
+                <div onclick="showPage('dashboard')" class="nav-item active flex items-center gap-4 px-6 py-5 rounded-3xl cursor-pointer mb-2">
+                    <i class="fa-solid fa-gauge-high w-6"></i><span class="font-semibold">لوحة التحكم</span>
+                </div>
+                <div onclick="showPage('pos')" class="nav-item flex items-center gap-4 px-6 py-5 rounded-3xl cursor-pointer mb-2">
+                    <i class="fa-solid fa-cash-register w-6"></i><span class="font-semibold">نقطة البيع</span>
+                </div>
+                <div onclick="showPage('products')" class="nav-item flex items-center gap-4 px-6 py-5 rounded-3xl cursor-pointer mb-2">
+                    <i class="fa-solid fa-boxes-stacked w-6"></i><span class="font-semibold">المنتجات</span>
+                </div>
+                <div onclick="showPage('customers')" class="nav-item flex items-center gap-4 px-6 py-5 rounded-3xl cursor-pointer mb-2">
+                    <i class="fa-solid fa-users w-6"></i><span class="font-semibold">العملاء والولاء</span>
+                </div>
+                <div onclick="showPage('reports')" class="nav-item flex items-center gap-4 px-6 py-5 rounded-3xl cursor-pointer mb-2">
+                    <i class="fa-solid fa-chart-bar w-6"></i><span class="font-semibold">تقاريري</span>
+                </div>
+                <div onclick="showPage('invoices')" class="nav-item flex items-center gap-4 px-6 py-5 rounded-3xl cursor-pointer mb-2">
+                    <i class="fa-solid fa-file-invoice w-6"></i><span class="font-semibold">الفواتير</span>
+                </div>
+
+                <div id="admin-section" class="hidden mt-10 pt-6 border-t border-zinc-700">
+                    <div class="px-6 text-emerald-400 text-sm font-bold mb-4">إدارة النظام</div>
+                    <div onclick="showPage('users')" class="nav-item flex items-center gap-4 px-6 py-5 rounded-3xl cursor-pointer">
+                        <i class="fa-solid fa-users-gear w-6"></i><span class="font-semibold">إدارة الموظفين</span>
                     </div>
                 </div>
-                
-                <div class="flex-1 overflow-auto py-6 px-3 space-y-1">
-                    <div onclick="showPage('dashboard')" class="nav-item active flex items-center gap-4 px-6 py-4 rounded-3xl cursor-pointer text-lg font-medium">
-                        <i class="fa-solid fa-gauge-high w-6"></i>
-                        <span>لوحة التحكم</span>
-                    </div>
-                    <div onclick="showPage('pos')" class="nav-item flex items-center gap-4 px-6 py-4 rounded-3xl cursor-pointer text-lg font-medium">
-                        <i class="fa-solid fa-cash-register w-6"></i>
-                        <span>نقطة البيع</span>
-                    </div>
-                    <div onclick="showPage('products')" class="nav-item flex items-center gap-4 px-6 py-4 rounded-3xl cursor-pointer text-lg font-medium">
-                        <i class="fa-solid fa-boxes-stacked w-6"></i>
-                        <span>المنتجات والمخزون</span>
-                    </div>
-                    <div onclick="showPage('customers')" class="nav-item flex items-center gap-4 px-6 py-4 rounded-3xl cursor-pointer text-lg font-medium">
-                        <i class="fa-solid fa-users w-6"></i>
-                        <span>المواطنين والعملاء</span>
-                    </div>
-                    <div onclick="showPage('reports')" class="nav-item flex items-center gap-4 px-6 py-4 rounded-3xl cursor-pointer text-lg font-medium">
-                        <i class="fa-solid fa-chart-line w-6"></i>
-                        <span>تقاريري اليومية والشهرية</span>
-                    </div>
-                    <div onclick="showPage('invoices')" class="nav-item flex items-center gap-4 px-6 py-4 rounded-3xl cursor-pointer text-lg font-medium">
-                        <i class="fa-solid fa-file-invoice w-6"></i>
-                        <span>الفواتير والطباعة</span>
-                    </div>
-                    
-                    <div id="admin-menu" class="hidden mt-8 pt-6 border-t border-zinc-700">
-                        <div class="px-6 text-emerald-400 text-sm font-bold mb-3">إدارة النظام</div>
-                        <div onclick="showPage('users-management')" class="nav-item flex items-center gap-4 px-6 py-4 rounded-3xl cursor-pointer text-lg font-medium">
-                            <i class="fa-solid fa-users-gear w-6"></i>
-                            <span>إدارة الموظفين</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="p-6 border-t border-zinc-800 text-xs text-zinc-500">
-                    <button onclick="clearAllData()" 
-                            class="w-full py-3 hover:bg-red-900/30 rounded-2xl flex items-center justify-center gap-2 text-red-400">
-                        <i class="fa-solid fa-trash"></i>
-                        مسح جميع البيانات
+
+                <div class="mt-auto">
+                    <button onclick="clearAllData()" class="w-full py-4 text-red-400 hover:bg-red-900/30 rounded-3xl flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-trash"></i> مسح البيانات
                     </button>
                 </div>
             </div>
 
-            <!-- المحتوى الرئيسي -->
-            <div class="flex-1 overflow-auto p-8 bg-zinc-950" id="main-content">
+            <!-- المحتوى -->
+            <div class="flex-1 overflow-auto p-8" id="main-content">
 
                 <!-- لوحة التحكم -->
                 <div id="dashboard" class="page active">
-                    <div class="flex justify-between items-end mb-8">
-                        <div>
-                            <h1 class="text-4xl font-black">مرحباً يا <span id="welcome-name" class="text-emerald-400"></span></h1>
-                            <p class="text-zinc-400 mt-1">نظرة عامة على أداء اليوم</p>
+                    <h1 class="text-4xl font-black mb-2">مرحباً، <span id="welcome-name" class="text-emerald-400"></span></h1>
+                    <p class="text-zinc-400 mb-8">نظرة عامة على أدائك اليوم</p>
+
+                    <div class="grid grid-cols-4 gap-6">
+                        <div class="bg-zinc-900 p-8 rounded-3xl">
+                            <p class="text-emerald-400">مبيعاتي اليوم</p>
+                            <p id="today-sales" class="text-5xl font-black mt-4">0 ر.س</p>
                         </div>
-                        <div class="text-right">
-                            <div class="text-sm text-zinc-400">اليوم</div>
-                            <div id="dashboard-date" class="text-2xl font-bold"></div>
+                        <div class="bg-zinc-900 p-8 rounded-3xl">
+                            <p class="text-amber-400">فواتيري اليوم</p>
+                            <p id="today-count" class="text-5xl font-black mt-4">0</p>
+                        </div>
+                        <div class="bg-zinc-900 p-8 rounded-3xl">
+                            <p class="text-red-400">مخزون منخفض</p>
+                            <p id="low-stock" class="text-5xl font-black mt-4 text-red-400">0</p>
+                        </div>
+                        <div class="bg-zinc-900 p-8 rounded-3xl">
+                            <p class="text-purple-400">نقاط العملاء</p>
+                            <p id="total-points" class="text-5xl font-black mt-4">1240</p>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div class="bg-zinc-900 rounded-3xl p-7 card-hover">
-                            <div class="flex justify-between">
-                                <div>
-                                    <p class="text-emerald-400 text-sm">مبيعاتي اليوم</p>
-                                    <p id="my-today-sales" class="text-5xl font-black mt-3">0</p>
-                                    <p class="text-xs text-zinc-400">ريال سعودي</p>
-                                </div>
-                                <i class="fa-solid fa-sack-dollar text-6xl text-emerald-500/30"></i>
-                            </div>
-                        </div>
-                        <div class="bg-zinc-900 rounded-3xl p-7 card-hover">
-                            <div class="flex justify-between">
-                                <div>
-                                    <p class="text-amber-400 text-sm">فواتيري اليوم</p>
-                                    <p id="my-today-count" class="text-5xl font-black mt-3">0</p>
-                                </div>
-                                <i class="fa-solid fa-receipt text-6xl text-amber-500/30"></i>
-                            </div>
-                        </div>
-                        <div class="bg-zinc-900 rounded-3xl p-7 card-hover">
-                            <div class="flex justify-between">
-                                <div>
-                                    <p class="text-blue-400 text-sm">المنتجات المنخفضة</p>
-                                    <p id="low-stock-count" class="text-5xl font-black mt-3 text-red-400">0</p>
-                                </div>
-                                <i class="fa-solid fa-triangle-exclamation text-6xl text-red-500/30"></i>
-                            </div>
-                        </div>
-                        <div class="bg-zinc-900 rounded-3xl p-7 card-hover">
-                            <div class="flex justify-between">
-                                <div>
-                                    <p class="text-purple-400 text-sm">نقاط العملاء</p>
-                                    <p id="total-customer-points" class="text-5xl font-black mt-3">1240</p>
-                                </div>
-                                <i class="fa-solid fa-gem text-6xl text-purple-500/30"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <div class="bg-zinc-900 rounded-3xl p-8">
-                            <h3 class="font-bold text-xl mb-6">مبيعاتي هذا الأسبوع</h3>
-                            <canvas id="weeklyChart" height="110"></canvas>
-                        </div>
-                        <div class="bg-zinc-900 rounded-3xl p-8">
-                            <h3 class="font-bold text-xl mb-6">أكثر 5 منتجات مبيعاً</h3>
-                            <div id="top-products-list" class="space-y-5"></div>
-                        </div>
+                    <div class="mt-10 bg-zinc-900 rounded-3xl p-8">
+                        <h3 class="font-bold text-xl mb-6">مبيعاتي هذا الأسبوع</h3>
+                        <canvas id="weekly-chart" height="120"></canvas>
                     </div>
                 </div>
 
-                <!-- نقطة البيع (POS) - الأهم -->
+                <!-- نقطة البيع -->
                 <div id="pos" class="page">
-                    <h2 class="text-3xl font-bold mb-8 flex items-center gap-4">
-                        <i class="fa-solid fa-cash-register"></i> 
-                        نقطة البيع السريعة
-                    </h2>
-                    
-                    <div class="grid grid-cols-12 gap-6 h-[calc(100vh-200px)]">
-                        <!-- قائمة المنتجات -->
-                        <div class="col-span-7 bg-zinc-900 rounded-3xl p-6 overflow-auto">
-                            <input id="pos-search" type="text" placeholder="ابحث عن منتج أو باركود..." 
-                                   class="w-full bg-zinc-800 rounded-3xl px-6 py-5 text-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 mb-6"
-                                   onkeyup="filterPosProducts()">
-                            <div id="pos-products" class="grid grid-cols-3 gap-4"></div>
+                    <h2 class="text-3xl font-bold mb-6">نقطة البيع</h2>
+                    <div class="grid grid-cols-12 gap-6">
+                        <div class="col-span-7 bg-zinc-900 rounded-3xl p-6">
+                            <input id="pos-search" placeholder="ابحث عن منتج..." 
+                                   class="w-full bg-zinc-800 rounded-3xl px-6 py-5 mb-6 text-lg"
+                                   onkeyup="filterProducts()">
+                            <div id="pos-product-list" class="grid grid-cols-3 gap-4"></div>
                         </div>
-                        
-                        <!-- السلة -->
                         <div class="col-span-5 bg-zinc-900 rounded-3xl p-6 flex flex-col">
-                            <div class="flex justify-between items-center mb-6">
-                                <h3 class="text-2xl font-bold">السلة</h3>
-                                <button onclick="clearCart()" class="text-red-400 hover:text-red-500">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                            <div id="cart-items" class="flex-1 overflow-auto space-y-4"></div>
-                            
+                            <h3 class="font-bold text-2xl mb-6">السلة</h3>
+                            <div id="cart" class="flex-1 overflow-auto space-y-4"></div>
                             <div class="border-t border-zinc-700 pt-6">
-                                <div class="flex justify-between text-2xl font-bold">
-                                    <span>الإجمالي</span>
+                                <div class="text-3xl font-black flex justify-between">
+                                    <span>الإجمالي:</span>
                                     <span id="cart-total" class="text-emerald-400">0 ر.س</span>
                                 </div>
-                                <button onclick="checkout()" 
-                                        class="mt-6 w-full bg-gradient-to-r from-emerald-500 to-teal-600 py-6 rounded-3xl text-2xl font-black hover:brightness-110">
+                                <button onclick="completeSale()" 
+                                        class="mt-6 w-full py-6 bg-emerald-600 rounded-3xl text-2xl font-bold">
                                     إنهاء البيع وطباعة الفاتورة
                                 </button>
                             </div>
@@ -272,68 +166,78 @@
                     </div>
                 </div>
 
-                <!-- باقي الصفحات (مختصرة للاختصار) -->
+                <!-- المنتجات -->
                 <div id="products" class="page">
-                    <div class="flex justify-between items-center mb-8">
-                        <h2 class="text-3xl font-bold">إدارة المنتجات والمخزون</h2>
-                        <button onclick="addProductModal()" class="bg-emerald-600 px-8 py-4 rounded-3xl font-bold flex items-center gap-3">
-                            <i class="fa-solid fa-plus"></i> منتج جديد
-                        </button>
-                    </div>
-                    <div id="products-table" class="bg-zinc-900 rounded-3xl overflow-hidden"></div>
+                    <h2 class="text-3xl font-bold mb-6">المنتجات والمخزون</h2>
+                    <button onclick="addNewProduct()" class="mb-6 bg-emerald-600 px-8 py-4 rounded-3xl font-bold">+ إضافة منتج</button>
+                    <table class="w-full bg-zinc-900 rounded-3xl overflow-hidden">
+                        <thead class="bg-zinc-800"><tr><th class="p-5 text-right">المنتج</th><th>السعر</th><th>المخزون</th><th>إجراء</th></tr></thead>
+                        <tbody id="products-tbody"></tbody>
+                    </table>
                 </div>
 
+                <!-- العملاء والولاء -->
+                <div id="customers" class="page">
+                    <h2 class="text-3xl font-bold mb-6">العملاء وبرنامج الولاء</h2>
+                    <button onclick="addNewCustomer()" class="mb-6 bg-emerald-600 px-8 py-4 rounded-3xl font-bold">+ عميل جديد</button>
+                    <table class="w-full bg-zinc-900 rounded-3xl overflow-hidden">
+                        <thead class="bg-zinc-800"><tr><th class="p-5 text-right">الاسم</th><th>الجوال</th><th>النقاط</th></tr></thead>
+                        <tbody id="customers-tbody"></tbody>
+                    </table>
+                </div>
+
+                <!-- التقارير -->
                 <div id="reports" class="page">
-                    <h2 class="text-3xl font-bold mb-8">تقاريري اليومية والشهرية</h2>
+                    <h2 class="text-3xl font-bold mb-6">تقاريري اليومية والشهرية</h2>
                     <div class="bg-zinc-900 rounded-3xl p-8">
-                        <canvas id="salesTrendChart" height="140"></canvas>
+                        <canvas id="report-chart" height="140"></canvas>
                     </div>
                 </div>
 
-                <!-- صفحات أخرى يمكن توسيعها -->
-                <div id="customers" class="page">قائمة المواطنين والعملاء مع برنامج الولاء</div>
-                <div id="invoices" class="page">جميع الفواتير مع إمكانية إعادة الطباعة</div>
-                <div id="users-management" class="page hidden">إدارة الموظفين (للأدمن فقط)</div>
+                <!-- الفواتير -->
+                <div id="invoices" class="page">
+                    <h2 class="text-3xl font-bold mb-6">جميع الفواتير</h2>
+                    <div id="invoices-list" class="space-y-4"></div>
+                </div>
+
+                <!-- إدارة الموظفين (أدمن فقط) -->
+                <div id="users" class="page hidden">
+                    <h2 class="text-3xl font-bold mb-6">إدارة الموظفين</h2>
+                    <p class="text-emerald-400">متاح فقط للمدير (سلمان)</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- فاتورة الطباعة -->
-    <div id="print-area" class="hidden">
-        <div class="receipt" id="receipt">
-            <div class="text-center mb-6 border-b pb-4">
-                <h2 class="text-2xl font-black">بقالتي برو</h2>
-                <p class="text-sm">الرياض - السعودية</p>
-                <p id="receipt-date" class="text-xs mt-2"></p>
+    <!-- منطقة الطباعة -->
+    <div id="receipt-print" class="hidden">
+        <div class="receipt" id="receipt-content">
+            <div class="text-center text-2xl font-black mb-4">بقالة سلمان</div>
+            <div id="receipt-info" class="text-center text-sm mb-6"></div>
+            <table id="receipt-table" class="w-full text-sm"></table>
+            <div class="border-t mt-6 pt-4 text-xl font-bold flex justify-between">
+                <span>الإجمالي</span>
+                <span id="receipt-total"></span>
             </div>
-            <table class="w-full text-sm" id="receipt-items"></table>
-            <div class="border-t mt-6 pt-4 text-lg">
-                <div class="flex justify-between font-bold">
-                    <span>الإجمالي النهائي</span>
-                    <span id="receipt-final"></span>
-                </div>
-            </div>
-            <div class="text-center text-xs mt-10">شكراً لتسوقك معنا • بقالتي برو</div>
+            <div class="text-center text-xs mt-10">شكراً لتسوقك معنا</div>
         </div>
     </div>
 
     <script>
-        // ==================== بيانات المستخدمين ====================
-        let users = [
-            { id: 1, username: "salman", password: "1234", name: "سلمان", role: "admin", position: "المدير العام" },
-            { id: 2, username: "azoz", password: "1234", name: "عزوز", role: "cashier", position: "كاشير" }
+        // ==================== المستخدمين ====================
+        const USERS = [
+            {id:1, username:"salman", password:"1234", name:"سلمان", role:"admin", position:"المدير"},
+            {id:2, username:"azoz", password:"1234", name:"عزوز", role:"cashier", position:"كاشير"}
         ];
 
         let currentUser = null;
-
-        // ==================== بيانات النظام ====================
         let systemData = {
             products: [
-                {id:1, name:"أرز بسمتي 5كجم", price:29.9, stock:48, category:"أرز"},
-                {id:2, name:"سكر أبيض 2كجم", price:13.5, stock:95, category:"سكر"},
-                {id:3, name:"زيت ذرة 1.8 لتر", price:19.9, stock:32, category:"زيوت"},
-                {id:4, name:"حليب طازج 1 لتر", price:6.75, stock:120, category:"ألبان"},
-                {id:5, name:"بيض مزرعة 30 بيضة", price:24, stock:27, category:"بيض"}
+                {id:1, name:"أرز بسمتي 5 كجم", price:28.5, stock:45},
+                {id:2, name:"سكر أبيض 2 كجم", price:12, stock:110},
+                {id:3, name:"زيت ذرة 1.5 لتر", price:18.75, stock:38},
+                {id:4, name:"حليب طازج 1 لتر", price:7, stock:85},
+                {id:5, name:"بيض 30 حبة", price:23, stock:22}
             ],
             customers: [],
             transactions: []
@@ -343,218 +247,207 @@
 
         // ==================== تسجيل الدخول ====================
         function login() {
-            const username = document.getElementById('username').value.trim().toLowerCase();
-            const password = document.getElementById('password').value;
+            const username = document.getElementById("username").value.trim().toLowerCase();
+            const password = document.getElementById("password").value;
 
-            const user = users.find(u => u.username === username && u.password === password);
+            const user = USERS.find(u => u.username === username && u.password === password);
             
             if (user) {
                 currentUser = user;
-                localStorage.setItem('currentBqaalaUser', JSON.stringify(user));
+                localStorage.setItem("bqaalaUser", JSON.stringify(user));
                 
-                document.getElementById('login-page').classList.add('hidden');
-                document.getElementById('main-app').classList.remove('hidden');
+                document.getElementById("login-page").classList.add("hidden");
+                document.getElementById("main-app").classList.remove("hidden");
                 
-                document.getElementById('header-user-name').textContent = user.name;
-                document.getElementById('header-user-role').textContent = user.position;
-                document.getElementById('welcome-name').textContent = user.name;
+                document.getElementById("header-name").textContent = user.name;
+                document.getElementById("header-role").textContent = user.position;
+                document.getElementById("welcome-name").textContent = user.name;
                 
-                // إظهار قائمة الأدمن
-                document.getElementById('admin-menu').classList.toggle('hidden', user.role !== 'admin');
+                document.getElementById("admin-section").classList.toggle("hidden", user.role !== "admin");
                 
-                initSystem();
+                initApp();
             } else {
-                alert('بيانات الدخول غير صحيحة');
+                alert("اسم المستخدم أو كلمة المرور خاطئة");
             }
         }
 
         function logout() {
-            if (confirm('تسجيل الخروج؟')) {
-                localStorage.removeItem('currentBqaalaUser');
-                location.reload();
-            }
+            if (confirm("تسجيل الخروج؟")) location.reload();
         }
 
         // ==================== تهيئة النظام ====================
-        function initSystem() {
-            // تحميل البيانات
-            const saved = localStorage.getItem('bqaalaProData');
+        function initApp() {
+            const saved = localStorage.getItem("bqaalaData");
             if (saved) systemData = JSON.parse(saved);
             
             updateDate();
+            renderProducts();
+            renderCustomers();
             renderDashboard();
             renderPosProducts();
-            
-            setInterval(updateDate, 60000);
-        }
-
-        function updateDate() {
-            const now = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('current-date').textContent = now.toLocaleDateString('ar-SA', options);
-            document.getElementById('dashboard-date').textContent = now.toLocaleDateString('ar-SA', options);
         }
 
         function saveData() {
-            localStorage.setItem('bqaalaProData', JSON.stringify(systemData));
+            localStorage.setItem("bqaalaData", JSON.stringify(systemData));
         }
 
-        function showPage(pageName) {
+        function updateDate() {
+            const dateEl = document.getElementById("current-date");
+            dateEl.textContent = new Date().toLocaleDateString('ar-SA', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+        }
+
+        function showPage(page) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageName).classList.add('active');
+            document.getElementById(page).classList.add('active');
             
-            if (pageName === 'dashboard') renderDashboard();
-            if (pageName === 'pos') renderPosProducts();
+            if (page === "dashboard") renderDashboard();
+            if (page === "pos") renderPosProducts();
         }
 
         // ==================== لوحة التحكم ====================
         function renderDashboard() {
-            const myTransactions = systemData.transactions.filter(t => 
-                currentUser.role === 'admin' || t.createdBy === currentUser.id
-            );
-            
             const today = new Date().toISOString().split('T')[0];
-            const todayTrans = myTransactions.filter(t => t.date === today);
+            const myTrans = systemData.transactions.filter(t => 
+                currentUser.role === "admin" || t.createdBy === currentUser.id
+            );
+            const todayTrans = myTrans.filter(t => t.date === today);
             
-            let todaySales = todayTrans.reduce((sum, t) => sum + (t.total || 0), 0);
+            const sales = todayTrans.reduce((a, t) => a + t.total, 0);
             
-            document.getElementById('my-today-sales').textContent = todaySales.toFixed(0);
-            document.getElementById('my-today-count').textContent = todayTrans.length;
+            document.getElementById("today-sales").textContent = sales + " ر.س";
+            document.getElementById("today-count").textContent = todayTrans.length;
             
-            // رسم بياني أسبوعي
-            renderWeeklyChart();
-            
-            // أكثر المنتجات مبيعاً (محاكاة)
-            const topHTML = `
-                <div class="flex justify-between items-center bg-zinc-800 p-4 rounded-2xl">
-                    <div>أرز بسمتي</div>
-                    <div class="font-bold text-emerald-400">42 مرة</div>
-                </div>
-                <div class="flex justify-between items-center bg-zinc-800 p-4 rounded-2xl">
-                    <div>زيت ذرة</div>
-                    <div class="font-bold text-emerald-400">31 مرة</div>
-                </div>`;
-            document.getElementById('top-products-list').innerHTML = topHTML;
+            // رسم بياني
+            new Chart(document.getElementById("weekly-chart"), {
+                type: 'bar',
+                data: {
+                    labels: ['سبت', 'أحد', 'إثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة'],
+                    datasets: [{ label: 'مبيعات', data: [850,1200,950,1800,1400,2100,1650], backgroundColor: '#10b981' }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false }}}
+            });
         }
 
-        let weeklyChartInstance = null;
-        function renderWeeklyChart() {
-            const ctx = document.getElementById('weeklyChart');
-            if (weeklyChartInstance) weeklyChartInstance.destroy();
-            
-            weeklyChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['السبت', 'الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'],
-                    datasets: [{
-                        label: 'المبيعات',
-                        data: [1250, 980, 2340, 1870, 1560, 2100, 1340],
-                        borderColor: '#10b981',
-                        tension: 0.4,
-                        borderWidth: 4
-                    }]
-                },
-                options: { responsive: true, plugins: { legend: { display: false } } }
+        // ==================== المنتجات ====================
+        function renderProducts() {
+            const tbody = document.getElementById("products-tbody");
+            tbody.innerHTML = "";
+            systemData.products.forEach(p => {
+                const tr = document.createElement("tr");
+                tr.className = "border-b border-zinc-700 hover:bg-zinc-800";
+                tr.innerHTML = `
+                    <td class="p-5">${p.name}</td>
+                    <td class="p-5">${p.price} ر.س</td>
+                    <td class="p-5 ${p.stock < 20 ? 'text-red-400' : ''}">${p.stock}</td>
+                    <td class="p-5"><button onclick="deleteProduct(${p.id})" class="text-red-400">حذف</button></td>
+                `;
+                tbody.appendChild(tr);
             });
+        }
+
+        function addNewProduct() {
+            const name = prompt("اسم المنتج:");
+            if (!name) return;
+            const price = parseFloat(prompt("السعر:", "15"));
+            systemData.products.push({id: Date.now(), name, price, stock: 50});
+            saveData();
+            renderProducts();
+            renderPosProducts();
+        }
+
+        function deleteProduct(id) {
+            if (confirm("حذف المنتج؟")) {
+                systemData.products = systemData.products.filter(p => p.id !== id);
+                saveData();
+                renderProducts();
+                renderPosProducts();
+            }
+        }
+
+        // ==================== العملاء ====================
+        function renderCustomers() {
+            const tbody = document.getElementById("customers-tbody");
+            tbody.innerHTML = "";
+            systemData.customers.forEach(c => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `<td class="p-5">${c.name}</td><td class="p-5">${c.phone}</td><td class="p-5 text-emerald-400">${c.points} نقطة</td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function addNewCustomer() {
+            const name = prompt("اسم العميل:");
+            const phone = prompt("رقم الجوال:");
+            if (name && phone) {
+                systemData.customers.push({id: Date.now(), name, phone, points: 50});
+                saveData();
+                renderCustomers();
+            }
         }
 
         // ==================== نقطة البيع ====================
-        function renderPosProducts(filtered = null) {
-            const container = document.getElementById('pos-products');
-            container.innerHTML = '';
-            
-            const products = filtered || systemData.products;
-            
-            products.forEach(product => {
-                const div = document.createElement('div');
-                div.className = `product-card bg-zinc-800 rounded-3xl p-4 cursor-pointer text-center`;
-                div.innerHTML = `
-                    <div class="text-emerald-400 text-3xl mb-2">🛍️</div>
-                    <div class="font-semibold">${product.name}</div>
-                    <div class="text-2xl font-black text-emerald-400 mt-2">${product.price} ر.س</div>
-                    <div class="text-xs text-zinc-400 mt-1">متبقي: ${product.stock}</div>
-                `;
-                div.onclick = () => addToCart(product);
-                container.appendChild(div);
+        function renderPosProducts() {
+            const container = document.getElementById("pos-product-list");
+            container.innerHTML = "";
+            systemData.products.forEach(p => {
+                if (p.stock > 0) {
+                    const div = document.createElement("div");
+                    div.className = "bg-zinc-800 p-6 rounded-3xl text-center cursor-pointer hover:bg-emerald-600 transition";
+                    div.innerHTML = `<div class="font-bold">${p.name}</div><div class="text-2xl text-emerald-400 mt-2">${p.price} ر.س</div>`;
+                    div.onclick = () => addToCart(p);
+                    container.appendChild(div);
+                }
             });
         }
 
-        function filterPosProducts() {
-            const term = document.getElementById('pos-search').value.toLowerCase();
-            const filtered = systemData.products.filter(p => 
-                p.name.toLowerCase().includes(term)
-            );
-            renderPosProducts(filtered);
+        function filterProducts() {
+            const term = document.getElementById("pos-search").value.toLowerCase();
+            // يمكن تحسين الفلتر لاحقاً
+            renderPosProducts();
         }
 
         function addToCart(product) {
-            if (product.stock <= 0) return alert('المنتج غير متوفر');
-            
             const existing = cart.find(item => item.id === product.id);
-            if (existing) {
-                existing.qty++;
-            } else {
-                cart.push({...product, qty: 1});
-            }
+            if (existing) existing.qty++;
+            else cart.push({...product, qty: 1});
             renderCart();
         }
 
         function renderCart() {
-            const container = document.getElementById('cart-items');
-            container.innerHTML = '';
+            const container = document.getElementById("cart");
+            container.innerHTML = "";
             let total = 0;
             
-            cart.forEach((item, index) => {
-                const itemTotal = item.price * item.qty;
-                total += itemTotal;
-                
-                const div = document.createElement('div');
-                div.className = "flex justify-between items-center bg-zinc-800 rounded-2xl p-4";
+            cart.forEach((item, i) => {
+                total += item.price * item.qty;
+                const div = document.createElement("div");
+                div.className = "flex justify-between bg-zinc-800 p-4 rounded-2xl";
                 div.innerHTML = `
-                    <div>
-                        <div class="font-medium">${item.name}</div>
-                        <div class="text-sm text-zinc-400">${item.qty} × ${item.price}</div>
-                    </div>
-                    <div class="text-right">
-                        <div class="font-bold">${itemTotal.toFixed(1)} ر.س</div>
-                        <button onclick="removeFromCart(${index})" class="text-red-400 text-xs mt-1">إزالة</button>
-                    </div>
+                    <div>${item.name} × ${item.qty}</div>
+                    <div class="font-bold">${(item.price * item.qty).toFixed(1)} ر.س</div>
                 `;
                 container.appendChild(div);
             });
             
-            document.getElementById('cart-total').textContent = total.toFixed(1) + " ر.س";
+            document.getElementById("cart-total").textContent = total.toFixed(1) + " ر.س";
         }
 
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            renderCart();
-        }
-
-        function clearCart() {
-            if (confirm('تفريغ السلة؟')) {
-                cart = [];
-                renderCart();
-            }
-        }
-
-        function checkout() {
-            if (cart.length === 0) return alert('السلة فارغة!');
+        function completeSale() {
+            if (cart.length === 0) return alert("السلة فارغة");
             
             const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
             
             const transaction = {
-                id: "INV-" + Date.now().toString().slice(-8),
+                id: "F-" + Date.now().toString().slice(-6),
                 date: new Date().toISOString().split('T')[0],
-                time: new Date().toLocaleTimeString('ar-SA'),
-                items: [...cart],
                 total: total,
+                items: [...cart],
                 createdBy: currentUser.id
             };
             
             systemData.transactions.push(transaction);
             
-            // تحديث المخزون
+            // خصم المخزون
             cart.forEach(item => {
                 const prod = systemData.products.find(p => p.id === item.id);
                 if (prod) prod.stock -= item.qty;
@@ -566,19 +459,44 @@
             cart = [];
             renderCart();
             renderDashboard();
+            renderProducts();
             
-            alert(`تم إكمال البيع بنجاح!\nرقم الفاتورة: ${transaction.id}`);
+            alert(`تم البيع بنجاح!\nرقم الفاتورة: ${transaction.id}`);
         }
 
         function printReceipt(transaction) {
-            const receiptDiv = document.getElementById('receipt');
-            document.getElementById('receipt-date').innerHTML = `
-                ${transaction.date} | ${transaction.time}<br>
-                الفاتورة رقم: <strong>${transaction.id}</strong>
-            `;
+            const content = document.getElementById("receipt-content");
+            document.getElementById("receipt-info").innerHTML = `التاريخ: ${transaction.date}<br>الفاتورة: ${transaction.id}`;
             
-            let itemsHTML = '';
+            let html = "";
             transaction.items.forEach(item => {
-                itemsHTML += `
-                    <tr>
-                       
+                html += `<tr><td>${item.name}</td><td>${item.qty}</td><td class="text-right">${(item.price*item.qty).toFixed(1)}</td></tr>`;
+            });
+            document.getElementById("receipt-table").innerHTML = html;
+            document.getElementById("receipt-total").textContent = transaction.total.toFixed(1) + " ر.س";
+            
+            const win = window.open("");
+            win.document.write(content.outerHTML);
+            win.print();
+        }
+
+        function clearAllData() {
+            if (confirm("مسح كل البيانات نهائياً؟")) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        // بدء التشغيل
+        window.onload = () => {
+            const savedUser = localStorage.getItem("bqaalaUser");
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                document.getElementById("login-page").classList.add("hidden");
+                document.getElementById("main-app").classList.remove("hidden");
+                initApp();
+            }
+        };
+    </script>
+</body>
+</html>
