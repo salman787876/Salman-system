@@ -3,827 +3,568 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام المدرسة الذكي المتطور - SmartEdu v3.0</title>
+    <title>منصة المدرسة الذكية المتكاملة - SmartEdu v4.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;900&display=swap');
-        
-        * {
-            font-family: 'Cairo', sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e2937 100%);
-        }
-        
-        .glass {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-        
-        .card {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4);
-        }
-        
-        .sidebar-link {
-            transition: all 0.3s ease;
-        }
-        
-        .sidebar-link:hover, .sidebar-link.active {
-            background-color: rgba(59, 130, 246, 0.3);
-            border-radius: 9999px;
-            color: white;
-        }
-        
-        .modal {
-            animation: modalScale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        
-        @keyframes modalScale {
-            from { opacity: 0; transform: scale(0.7) translateY(40px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        
-        .status-dot {
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
-        
-        .assignment-card {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .assignment-card::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-            transform: translateX(-150%);
-            transition: transform 0.7s;
-        }
-        
-        .assignment-card:hover::after {
-            transform: translateX(300%);
-        }
+        * { font-family: 'Cairo', sans-serif; }
+        body { background: linear-gradient(135deg, #0f172a 0%, #1e2937 100%); }
+        .glass { background: rgba(255,255,255,0.08); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.15); }
+        .card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card:hover { transform: translateY(-10px) scale(1.03); box-shadow: 25px 25px 50px -12px rgb(0 0 0 / 0.5); }
+        .modal { animation: modalPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        @keyframes modalPop { from { opacity: 0; transform: scale(0.8) translateY(30px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .assignment-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent); transform: translateX(-200%); transition: 0.8s; }
+        .assignment-card:hover::after { transform: translateX(200%); }
+        .nav-link { transition: all 0.3s; }
+        .nav-link.active, .nav-link:hover { background: rgba(103, 232, 249, 0.25); border-radius: 9999px; }
+        .chat-bubble { max-width: 75%; }
     </style>
 </head>
-<body class="text-white min-h-screen overflow-hidden">
-    <!-- شاشة تسجيل الدخول -->
-    <div id="login-screen" class="min-h-screen flex items-center justify-center p-6 bg-[radial-gradient(at_center,#1e3a8a_0%,transparent_70%)]">
-        <div class="glass rounded-3xl shadow-2xl p-12 max-w-lg w-full">
-            <div class="flex flex-col items-center text-center mb-10">
-                <div class="w-24 h-24 bg-gradient-to-br from-blue-500 via-cyan-400 to-purple-500 rounded-3xl flex items-center justify-center text-6xl mb-6 shadow-2xl ring-8 ring-white/20">
-                    🏛️
-                </div>
-                <h1 class="text-5xl font-black tracking-tighter">SmartEdu</h1>
-                <p class="text-cyan-300 text-2xl mt-1 font-medium">نظام المدرسة الذكي v3.0</p>
-                <p class="text-slate-400 mt-3">تجربة تعليمية متكاملة ومتطورة</p>
+<body class="text-white min-h-screen">
+
+    <!-- تسجيل الدخول -->
+    <div id="login-screen" class="min-h-screen flex items-center justify-center p-8">
+        <div class="glass rounded-3xl max-w-xl w-full p-14">
+            <div class="text-center mb-12">
+                <div class="inline-flex items-center justify-center w-28 h-28 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-3xl text-7xl mb-6 shadow-2xl">🏛️</div>
+                <h1 class="text-6xl font-black tracking-tighter">SmartEdu</h1>
+                <p class="text-3xl text-cyan-300 mt-2">المنصة المدرسية المتكاملة v4.0</p>
+                <p class="text-slate-400 mt-4">واجبات • درجات • جدول • تواصل • اجتماعات</p>
             </div>
-            
-            <form id="login-form" class="space-y-7">
+
+            <form id="login-form" class="space-y-8">
                 <div>
-                    <label class="text-sm font-medium text-slate-300 block mb-2">اسم المستخدم</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-user absolute right-5 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                        <input id="username" type="text" required
-                               class="w-full glass border border-white/30 focus:border-cyan-400 rounded-2xl py-5 px-6 pl-14 text-lg focus:outline-none transition-all"
-                               placeholder="مثال: طالب1 أو استاذ1">
-                    </div>
+                    <label class="block text-sm mb-3 text-slate-300">اسم المستخدم</label>
+                    <input id="username" type="text" required class="w-full glass border border-white/30 focus:border-cyan-400 rounded-3xl py-6 px-8 text-xl" placeholder="طالب1 أو استاذ1">
                 </div>
-                
                 <div>
-                    <label class="text-sm font-medium text-slate-300 block mb-2">كلمة المرور</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-lock absolute right-5 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                        <input id="password" type="password" value="123" required
-                               class="w-full glass border border-white/30 focus:border-cyan-400 rounded-2xl py-5 px-6 pl-14 text-lg focus:outline-none transition-all">
-                    </div>
+                    <label class="block text-sm mb-3 text-slate-300">كلمة المرور</label>
+                    <input id="password" type="password" value="123" required class="w-full glass border border-white/30 focus:border-cyan-400 rounded-3xl py-6 px-8 text-xl">
                 </div>
-                
-                <button type="submit"
-                        class="w-full py-6 bg-gradient-to-r from-blue-600 via-cyan-500 to-purple-600 hover:brightness-110 text-xl font-bold rounded-3xl flex items-center justify-center gap-3 shadow-xl active:scale-95 transition-all">
-                    <i class="fa-solid fa-arrow-left"></i>
-                    دخول إلى النظام
-                </button>
+                <button type="submit" class="w-full py-7 text-2xl font-bold bg-gradient-to-r from-cyan-500 to-blue-600 rounded-3xl hover:brightness-110">دخول للمنصة</button>
             </form>
-            
-            <div class="mt-10 grid grid-cols-2 gap-4 text-xs">
-                <div class="glass p-4 rounded-2xl text-center">
-                    <div class="font-bold text-emerald-400">المدير</div>
-                    <div>مدير / 123</div>
-                </div>
-                <div class="glass p-4 rounded-2xl text-center">
-                    <div class="font-bold text-blue-400">الأستاذ</div>
-                    <div>استاذ1 / 123</div>
-                </div>
-                <div class="glass p-4 rounded-2xl text-center">
-                    <div class="font-bold text-amber-400">الطالب</div>
-                    <div>طالب1 / 123</div>
-                </div>
-                <div class="glass p-4 rounded-2xl text-center">
-                    <div class="font-bold text-purple-400">الوكيل</div>
-                    <div>وكيل1 / 123</div>
-                </div>
+
+            <div class="grid grid-cols-4 gap-4 mt-12 text-center text-sm">
+                <div class="glass rounded-2xl p-4">👑 مدير<br><span class="text-xs">مدير / 123</span></div>
+                <div class="glass rounded-2xl p-4">👨‍🏫 استاذ1<br><span class="text-xs">استاذ1 / 123</span></div>
+                <div class="glass rounded-2xl p-4">🎓 طالب1<br><span class="text-xs">طالب1 / 123</span></div>
+                <div class="glass rounded-2xl p-4">👪 وكيل1<br><span class="text-xs">وكيل1 / 123</span></div>
             </div>
         </div>
     </div>
-    
+
     <!-- الداشبورد الرئيسي -->
-    <div id="dashboard" class="hidden min-h-screen flex">
-        <!-- Sidebar متطور -->
-        <div id="sidebar" class="w-72 glass border-l border-white/10 flex flex-col h-screen overflow-y-auto p-6">
-            <!-- Header Sidebar -->
-            <div class="flex items-center gap-4 mb-12 px-4">
-                <div class="w-14 h-14 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-2xl flex items-center justify-center text-4xl shadow-inner">🏛️</div>
-                <div>
-                    <div class="font-black text-3xl tracking-tighter">SmartEdu</div>
-                    <div class="text-xs text-cyan-300 -mt-1">النسخة المتطورة</div>
-                </div>
+    <div id="dashboard" class="hidden flex min-h-screen">
+        <!-- Sidebar -->
+        <div id="sidebar" class="w-80 glass border-l border-white/10 flex flex-col h-screen p-6 overflow-y-auto">
+            <div class="flex items-center gap-4 mb-10">
+                <div class="text-5xl">🏛️</div>
+                <div class="font-black text-4xl tracking-tighter">SmartEdu</div>
             </div>
-            
-            <div id="user-info-sidebar" class="glass rounded-3xl p-5 mb-10 flex items-center gap-4"></div>
-            
-            <!-- التنقل -->
-            <nav id="nav-menu" class="flex-1 space-y-2 text-lg"></nav>
-            
-            <div class="mt-auto pt-8 border-t border-white/10">
-                <button onclick="logout()" 
-                        class="w-full flex items-center justify-center gap-3 py-4 rounded-3xl hover:bg-red-500/20 text-red-300 transition-colors">
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                    <span class="font-medium">تسجيل الخروج</span>
-                </button>
+
+            <div id="sidebar-user" class="glass rounded-3xl p-6 mb-12 flex items-center gap-5"></div>
+
+            <nav id="sidebar-menu" class="flex-1 space-y-2 text-lg"></nav>
+
+            <div class="mt-auto pt-8 text-xs text-slate-400 flex items-center justify-between">
+                <span>منصة متكاملة • v4.0</span>
+                <button onclick="logout()" class="flex items-center gap-2 hover:text-red-400"><i class="fa-solid fa-arrow-right-from-bracket"></i> خروج</button>
             </div>
         </div>
-        
-        <!-- المحتوى الرئيسي -->
+
+        <!-- المحتوى -->
         <div class="flex-1 flex flex-col">
-            <!-- Top Navbar -->
-            <div class="h-20 glass border-b border-white/10 flex items-center px-10 justify-between">
-                <div class="flex items-center gap-8">
-                    <button onclick="toggleSidebar()" class="text-3xl text-slate-300 hover:text-white">
-                        <i class="fa-solid fa-bars"></i>
-                    </button>
-                    <div id="page-title" class="text-3xl font-bold"></div>
+            <!-- Top Bar -->
+            <div class="h-20 glass border-b flex items-center px-8 justify-between">
+                <div class="flex items-center gap-6">
+                    <button onclick="toggleSidebar()" class="text-4xl"><i class="fa-solid fa-bars"></i></button>
+                    <h1 id="page-title" class="text-4xl font-bold"></h1>
                 </div>
-                
                 <div class="flex items-center gap-8">
-                    <div onclick="showNotifications()" class="relative cursor-pointer">
-                        <i class="fa-solid fa-bell text-2xl"></i>
-                        <span id="notif-badge" class="absolute -top-2 -right-2 bg-red-500 text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold">4</span>
-                    </div>
-                    
-                    <div onclick="showProfileModal()" class="flex items-center gap-4 cursor-pointer">
-                        <div id="top-avatar" class="w-10 h-10 rounded-2xl flex items-center justify-center font-bold text-xl bg-gradient-to-br from-purple-500 to-pink-500"></div>
+                    <div onclick="openNotifications()" class="relative cursor-pointer text-2xl"><i class="fa-solid fa-bell"></i><span id="notif-count" class="absolute -top-1 -right-1 bg-red-500 text-xs rounded-full w-5 h-5 flex items-center justify-center">5</span></div>
+                    <div onclick="openProfile()" class="flex items-center gap-4 cursor-pointer">
+                        <div id="top-avatar" class="w-11 h-11 rounded-2xl text-3xl flex items-center justify-center"></div>
                         <div>
-                            <div id="top-name" class="font-semibold"></div>
-                            <div id="top-role" class="text-xs text-slate-400"></div>
+                            <div id="top-name" class="font-bold text-xl"></div>
+                            <div id="top-role" class="text-sm text-slate-400"></div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <!-- Content Area -->
-            <div id="main-content" class="flex-1 p-10 overflow-auto">
-                <!-- يتم تحميل المحتوى ديناميكياً -->
-            </div>
+
+            <div id="main-content" class="flex-1 p-10 overflow-auto"></div>
         </div>
     </div>
-    
+
     <!-- Modal عام -->
-    <div id="modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center">
-        <div onclick="event.stopImmediatePropagation()" id="modal-content" 
-             class="modal glass max-w-2xl w-full mx-4 rounded-3xl max-h-[90vh] overflow-hidden">
-        </div>
+    <div id="modal" onclick="if(event.target.id==='modal')hideModal()" class="hidden fixed inset-0 bg-black/70 backdrop-blur-2xl z-[9999] items-center justify-center">
+        <div onclick="event.stopImmediatePropagation()" id="modal-body" class="modal glass w-full max-w-4xl max-h-[92vh] rounded-3xl overflow-hidden"></div>
     </div>
-    
+
     <script>
-        // ==================== بيانات النظام ====================
+        // ====================== بيانات المنصة ======================
         let currentUser = null
         let users = []
         let assignments = []
-        let submittedAssignments = new Map() // id → studentId
-        
-        const roleIcons = {
-            principal: "👑",
-            teacher: "👨‍🏫",
-            student: "🎓",
-            guardian: "👪"
-        }
-        
-        const roleColors = {
-            principal: "from-amber-400 to-orange-500",
-            teacher: "from-emerald-400 to-cyan-500",
-            student: "from-blue-400 to-purple-500",
-            guardian: "from-pink-400 to-rose-500"
-        }
-        
-        // ==================== تحميل البيانات ====================
-        function initData() {
-            if (!localStorage.getItem('smartedu_users')) {
+        let submissions = {}           // assignmentId → [{studentId, answer, submittedAt, grade: null, teacherComment: ''}]
+        let grades = {}                // studentId → [{subject, grade, comment, date}]
+        let timetable = []
+        let teachers = []
+        let messages = []              // للتواصل
+        let meetings = []
+
+        function initSystem() {
+            // مستخدمين
+            if (!localStorage.getItem('v4_users')) {
                 users = [
-                    { id: 1, username: "مدير", password: "123", role: "principal", name: "أحمد المدير", avatar: "👑" },
-                    { id: 2, username: "استاذ1", password: "123", role: "teacher", name: "د. محمد الفهد", avatar: "👨‍🏫" },
-                    { id: 3, username: "طالب1", password: "123", role: "student", name: "علي الشمري", points: 320, avatar: "🎓", completed: [] },
-                    { id: 4, username: "وكيل1", password: "123", role: "guardian", name: "أم خالد", avatar: "👪" }
+                    {id:1, username:"مدير", password:"123", role:"principal", name:"أحمد المدير", avatar:"👑"},
+                    {id:2, username:"استاذ1", password:"123", role:"teacher", name:"د. محمد الفهد", avatar:"👨‍🏫", email:"mohammed.alfahad@smartedu.sa"},
+                    {id:3, username:"طالب1", password:"123", role:"student", name:"علي الشمري", avatar:"🎓", points:420, completed:[]},
+                    {id:4, username:"وكيل1", password:"123", role:"guardian", name:"أم خالد", avatar:"👪", childId:3}
                 ]
-                localStorage.setItem('smartedu_users', JSON.stringify(users))
-            } else {
-                users = JSON.parse(localStorage.getItem('smartedu_users'))
-            }
-            
-            if (!localStorage.getItem('smartedu_assignments')) {
+                localStorage.setItem('v4_users', JSON.stringify(users))
+            } else users = JSON.parse(localStorage.getItem('v4_users'))
+
+            // واجبات
+            if (!localStorage.getItem('v4_assignments')) {
                 assignments = [
-                    {
-                        id: 101,
-                        title: "حل مسائل الجبر الخطي",
-                        subject: "رياضيات",
-                        description: "حل 20 مسألة من تمارين الكتاب صفحة 67-72 مع شرح كل خطوة بالتفصيل.",
-                        dueDate: "2026-04-28",
-                        points: 35,
-                        postedBy: "استاذ1",
-                        postedDate: "2026-04-10"
-                    },
-                    {
-                        id: 102,
-                        title: "تقرير عن الطاقة المتجددة",
-                        subject: "علوم",
-                        description: "اكتب تقريراً علمياً من 4 صفحات يغطي أنواع الطاقة الشمسية والرياح مع أمثلة سعودية.",
-                        dueDate: "2026-04-30",
-                        points: 40,
-                        postedBy: "استاذ1",
-                        postedDate: "2026-04-12"
-                    },
-                    {
-                        id: 103,
-                        title: "تحليل قصيدة لامية العرب",
-                        subject: "لغة عربية",
-                        description: "اكتب تحليلاً أدبياً شاملاً للقصيدة مع التركيز على البلاغة والمعاني.",
-                        dueDate: "2026-04-25",
-                        points: 25,
-                        postedBy: "استاذ1",
-                        postedDate: "2026-04-15"
-                    }
+                    {id:101, title:"حل مسائل الجبر", subject:"رياضيات", desc:"اكتب الحلول كاملة هنا داخل المنصة", due:"2026-04-28", points:40, postedBy:"استاذ1"},
+                    {id:102, title:"تقرير الطاقة المتجددة", subject:"علوم", desc:"اكتب التقرير مباشرة في حقل الإجابة", due:"2026-04-30", points:50, postedBy:"استاذ1"},
+                    {id:103, title:"تحليل قصيدة لامية العرب", subject:"عربي", desc:"اكتب التحليل الأدبي كاملاً", due:"2026-04-25", points:30, postedBy:"استاذ1"}
                 ]
-                localStorage.setItem('smartedu_assignments', JSON.stringify(assignments))
-            } else {
-                assignments = JSON.parse(localStorage.getItem('smartedu_assignments'))
-            }
+                localStorage.setItem('v4_assignments', JSON.stringify(assignments))
+            } else assignments = JSON.parse(localStorage.getItem('v4_assignments'))
+
+            // تقديمات + درجات + جدول + معلمين + اجتماعات
+            if (!localStorage.getItem('v4_submissions')) submissions = {}
+            else submissions = JSON.parse(localStorage.getItem('v4_submissions'))
+
+            if (!localStorage.getItem('v4_grades')) grades = {}
+            else grades = JSON.parse(localStorage.getItem('v4_grades'))
+
+            if (!localStorage.getItem('v4_timetable')) {
+                timetable = [
+                    {day:"الأحد", time:"08:00", subject:"رياضيات", teacher:"استاذ1"},
+                    {day:"الأحد", time:"09:00", subject:"علوم", teacher:"استاذ1"},
+                    {day:"الاثنين", time:"08:00", subject:"عربي", teacher:"استاذ1"},
+                    {day:"الثلاثاء", time:"10:00", subject:"فيزياء", teacher:"استاذ1"},
+                ]
+                localStorage.setItem('v4_timetable', JSON.stringify(timetable))
+            } else timetable = JSON.parse(localStorage.getItem('v4_timetable'))
+
+            teachers = users.filter(u => u.role === "teacher")
+
+            if (!localStorage.getItem('v4_meetings')) {
+                meetings = [
+                    {id:1, title:"اجتماع تقييم الطلاب", time:"اليوم 11:30", participants:"جميع الأساتذة"},
+                    {id:2, title:"مناقشة المنهج الجديد", time:"غداً 09:00", participants:"المدير + الأساتذة"}
+                ]
+                localStorage.setItem('v4_meetings', JSON.stringify(meetings))
+            } else meetings = JSON.parse(localStorage.getItem('v4_meetings'))
+
+            // رسائل تواصل أولية
+            if (!localStorage.getItem('v4_messages')) {
+                messages = [
+                    {from:"استاذ1", to:"طالب1", text:"واجب الجبر ممتاز!", time:"منذ ساعة"}
+                ]
+                localStorage.setItem('v4_messages', JSON.stringify(messages))
+            } else messages = JSON.parse(localStorage.getItem('v4_messages'))
         }
-        
-        function saveData() {
-            localStorage.setItem('smartedu_users', JSON.stringify(users))
-            localStorage.setItem('smartedu_assignments', JSON.stringify(assignments))
+
+        function saveAll() {
+            localStorage.setItem('v4_users', JSON.stringify(users))
+            localStorage.setItem('v4_assignments', JSON.stringify(assignments))
+            localStorage.setItem('v4_submissions', JSON.stringify(submissions))
+            localStorage.setItem('v4_grades', JSON.stringify(grades))
+            localStorage.setItem('v4_timetable', JSON.stringify(timetable))
+            localStorage.setItem('v4_meetings', JSON.stringify(meetings))
+            localStorage.setItem('v4_messages', JSON.stringify(messages))
         }
-        
-        // ==================== تسجيل الدخول ====================
+
+        // ====================== تسجيل الدخول ======================
         function handleLogin(e) {
             e.preventDefault()
             const username = document.getElementById('username').value.trim()
-            const password = document.getElementById('password').value
-            
-            const user = users.find(u => u.username === username && u.password === password)
-            
+            const pass = document.getElementById('password').value
+            const user = users.find(u => u.username === username && u.password === pass)
             if (user) {
-                currentUser = {...user}
-                localStorage.setItem('smartedu_current', JSON.stringify(currentUser))
-                
+                currentUser = user
+                localStorage.setItem('v4_current', JSON.stringify(currentUser))
                 document.getElementById('login-screen').classList.add('hidden')
                 document.getElementById('dashboard').classList.remove('hidden')
-                
-                renderDashboard()
-            } else {
-                alert("❌ بيانات الدخول غير صحيحة")
-            }
+                renderFullDashboard()
+            } else alert('بيانات دخول خاطئة')
         }
-        
-        // ==================== عرض الداشبورد الكامل ====================
-        function renderDashboard() {
-            // Sidebar User Info
-            const sidebarUser = document.getElementById('user-info-sidebar')
-            sidebarUser.innerHTML = `
-                <div class="w-14 h-14 text-4xl flex items-center justify-center bg-gradient-to-br ${roleColors[currentUser.role]} rounded-2xl">${currentUser.avatar}</div>
+
+        // ====================== رسم الداشبورد ======================
+        function renderFullDashboard() {
+            // Sidebar user
+            const su = document.getElementById('sidebar-user')
+            su.innerHTML = `
+                <div class="text-5xl">${currentUser.avatar}</div>
                 <div class="flex-1">
-                    <div class="font-bold text-xl">${currentUser.name}</div>
-                    <div class="text-sm text-slate-300">${currentUser.role === 'student' ? currentUser.points + ' نقطة' : ''}</div>
+                    <div class="font-bold text-2xl">${currentUser.name}</div>
+                    <div class="text-cyan-300">${currentUser.role === 'student' ? currentUser.points + ' نقطة' : currentUser.role}</div>
                 </div>
             `
-            // Top Navbar
+
+            // Top bar
             document.getElementById('top-name').textContent = currentUser.name
-            document.getElementById('top-role').innerHTML = `<span class="capitalize">${currentUser.role}</span>`
+            document.getElementById('top-role').innerHTML = currentUser.role
             document.getElementById('top-avatar').innerHTML = currentUser.avatar
-            
-            // Menu حسب الدور
-            let menuHTML = `
-                <a onclick="goToPage('home')" class="sidebar-link flex items-center gap-4 px-6 py-4 text-lg cursor-pointer active">
-                    <i class="fa-solid fa-house w-6"></i> الرئيسية
-                </a>
-                <a onclick="goToPage('assignments')" class="sidebar-link flex items-center gap-4 px-6 py-4 text-lg cursor-pointer">
-                    <i class="fa-solid fa-book w-6"></i> الواجبات
-                </a>
+
+            // Sidebar menu (كبير ومتكامل)
+            let menu = `
+                <a onclick="goTo('home')" class="nav-link flex items-center gap-4 px-6 py-5 text-xl cursor-pointer active"><i class="fa-solid fa-house w-7"></i> الرئيسية</a>
+                <a onclick="goTo('assignments')" class="nav-link flex items-center gap-4 px-6 py-5 text-xl cursor-pointer"><i class="fa-solid fa-book w-7"></i> الواجبات (حل مباشر)</a>
+                <a onclick="goTo('grades')" class="nav-link flex items-center gap-4 px-6 py-5 text-xl cursor-pointer"><i class="fa-solid fa-chart-bar w-7"></i> الدرجات والتقييم</a>
+                <a onclick="goTo('timetable')" class="nav-link flex items-center gap-4 px-6 py-5 text-xl cursor-pointer"><i class="fa-solid fa-calendar w-7"></i> الجدول الدراسي</a>
+                <a onclick="goTo('teachers')" class="nav-link flex items-center gap-4 px-6 py-5 text-xl cursor-pointer"><i class="fa-solid fa-envelope w-7"></i> قائمة المعلمين + التواصل</a>
             `
-            if (currentUser.role === 'student') {
-                menuHTML += `
-                    <a onclick="goToPage('my-points')" class="sidebar-link flex items-center gap-4 px-6 py-4 text-lg cursor-pointer">
-                        <i class="fa-solid fa-trophy w-6"></i> نقاطي وإنجازاتي
-                    </a>
-                `
-            }
-            if (currentUser.role === 'teacher') {
-                menuHTML += `
-                    <a onclick="goToPage('create-assignment')" class="sidebar-link flex items-center gap-4 px-6 py-4 text-lg cursor-pointer">
-                        <i class="fa-solid fa-plus w-6"></i> إنشاء واجب جديد
-                    </a>
-                `
-            }
-            if (currentUser.role === 'principal') {
-                menuHTML += `
-                    <a onclick="goToPage('manage-students')" class="sidebar-link flex items-center gap-4 px-6 py-4 text-lg cursor-pointer">
-                        <i class="fa-solid fa-users w-6"></i> إدارة الطلاب
-                    </a>
-                `
-            }
             if (currentUser.role === 'guardian') {
-                menuHTML += `
-                    <a onclick="goToPage('progress')" class="sidebar-link flex items-center gap-4 px-6 py-4 text-lg cursor-pointer">
-                        <i class="fa-solid fa-chart-line w-6"></i> تقدم الطالب
-                    </a>
-                `
+                menu += `<a onclick="goTo('child-progress')" class="nav-link flex items-center gap-4 px-6 py-5 text-xl cursor-pointer"><i class="fa-solid fa-user-graduate w-7"></i> تقدم طفلي</a>`
             }
-            
-            document.getElementById('nav-menu').innerHTML = menuHTML
-            
-            // بدء بالصفحة الرئيسية
-            goToPage('home')
+            if (currentUser.role === 'teacher' || currentUser.role === 'principal') {
+                menu += `<a onclick="goTo('meetings')" class="nav-link flex items-center gap-4 px-6 py-5 text-xl cursor-pointer"><i class="fa-solid fa-video w-7"></i> غرف الاجتماعات</a>`
+            }
+            if (currentUser.role === 'student') {
+                menu += `<a onclick="goTo('my-points')" class="nav-link flex items-center gap-4 px-6 py-5 text-xl cursor-pointer"><i class="fa-solid fa-trophy w-7"></i> نقاطي</a>`
+            }
+            document.getElementById('sidebar-menu').innerHTML = menu
+
+            goTo('home')
         }
-        
-        // ==================== التنقل بين الصفحات ====================
-        function goToPage(page) {
+
+        function goTo(page) {
             const content = document.getElementById('main-content')
-            document.getElementById('page-title').textContent = getPageTitle(page)
-            
-            // إزالة active من كل الروابط
-            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'))
-            // إضافة active (بسيط)
-            const activeLink = Array.from(document.querySelectorAll('.sidebar-link')).find(l => l.getAttribute('onclick').includes(`'${page}'`))
-            if (activeLink) activeLink.classList.add('active')
-            
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'))
+            const active = Array.from(document.querySelectorAll('.nav-link')).find(l => l.getAttribute('onclick').includes(`'${page}'`))
+            if (active) active.classList.add('active')
+            document.getElementById('page-title').textContent = getTitle(page)
+
             if (page === 'home') {
                 content.innerHTML = `
-                    <div class="max-w-7xl mx-auto">
-                        <div class="flex justify-between items-end mb-10">
-                            <div>
-                                <h1 class="text-6xl font-black tracking-tighter">مرحباً، ${currentUser.name.split(' ')[0]} 👋</h1>
-                                <p class="text-2xl text-slate-400 mt-3">ما الذي سنتعلمه اليوم؟</p>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-sm text-slate-400">اليوم</div>
-                                <div class="text-4xl font-bold">${new Date().toLocaleDateString('ar-SA')}</div>
-                            </div>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                            <!-- Stats -->
-                            <div class="lg:col-span-8 grid grid-cols-3 gap-6">
-                                <div class="glass rounded-3xl p-8 card">
-                                    <i class="fa-solid fa-book text-5xl text-cyan-400 mb-6"></i>
-                                    <div class="text-6xl font-black">${assignments.length}</div>
-                                    <div class="text-slate-300 mt-2">واجب نشط</div>
-                                </div>
-                                <div class="glass rounded-3xl p-8 card">
-                                    <i class="fa-solid fa-users text-5xl text-emerald-400 mb-6"></i>
-                                    <div class="text-6xl font-black">${users.filter(u => u.role === 'student').length}</div>
-                                    <div class="text-slate-300 mt-2">طالب مسجل</div>
-                                </div>
-                                <div class="glass rounded-3xl p-8 card">
-                                    <i class="fa-solid fa-trophy text-5xl text-amber-400 mb-6"></i>
-                                    <div class="text-6xl font-black">${currentUser.role === 'student' ? currentUser.points : '—'}</div>
-                                    <div class="text-slate-300 mt-2">نقاطي</div>
-                                </div>
-                            </div>
-                            
-                            <!-- Recent Assignments -->
-                            <div class="lg:col-span-12 mt-8">
-                                <h2 class="text-3xl font-bold mb-6 flex items-center gap-3"><i class="fa-solid fa-clock"></i> أحدث الواجبات</h2>
-                                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" id="recent-assignments"></div>
-                            </div>
-                        </div>
+                <div class="max-w-7xl mx-auto">
+                    <h1 class="text-6xl font-black mb-3">مرحباً ${currentUser.name} 👋</h1>
+                    <p class="text-3xl text-slate-400">منصة متكاملة للتعلم والتواصل</p>
+                    <div class="grid grid-cols-4 gap-6 mt-16">
+                        <div class="glass rounded-3xl p-8 text-center card"><div class="text-6xl mb-4">📚</div><div class="text-4xl font-bold">${assignments.length}</div><div class="mt-2">واجب نشط</div></div>
+                        <div class="glass rounded-3xl p-8 text-center card"><div class="text-6xl mb-4">📊</div><div class="text-4xl font-bold">${currentUser.role==='student' ? Object.keys(grades[currentUser.id]||{}).length : '—'}</div><div class="mt-2">تقييم</div></div>
+                        <div class="glass rounded-3xl p-8 text-center card"><div class="text-6xl mb-4">🗓️</div><div class="text-4xl font-bold">${timetable.length}</div><div class="mt-2">حصة هذا الأسبوع</div></div>
+                        <div class="glass rounded-3xl p-8 text-center card"><div class="text-6xl mb-4">👥</div><div class="text-4xl font-bold">${teachers.length}</div><div class="mt-2">معلم متصل</div></div>
                     </div>
-                `
-                renderRecentAssignments()
+                </div>`
             }
-            
+
             else if (page === 'assignments') {
-                let html = `<div class="max-w-7xl mx-auto"><h1 class="text-4xl font-bold mb-10">جميع الواجبات (${assignments.length})</h1>`
-                html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-8">`
-                
-                assignments.forEach(ass => {
-                    const isSubmitted = currentUser.role === 'student' && currentUser.completed && currentUser.completed.includes(ass.id)
-                    
+                let html = `<div class="max-w-6xl mx-auto"><h2 class="text-4xl font-bold mb-8">الواجبات • حل مباشر على المنصة</h2><div class="grid grid-cols-2 gap-8">`
+                assignments.forEach(a => {
+                    const submitted = submissions[a.id] && submissions[a.id].find(s => s.studentId === currentUser.id)
                     html += `
-                    <div onclick="viewAssignment(${ass.id})" class="assignment-card glass rounded-3xl p-8 cursor-pointer card">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <div class="uppercase text-xs tracking-widest text-cyan-300">${ass.subject}</div>
-                                <h3 class="font-bold text-2xl mt-3 leading-tight">${ass.title}</h3>
-                            </div>
-                            <div class="text-right">
-                                <div class="px-5 py-1 bg-white/10 text-xs rounded-3xl inline-block">${ass.dueDate}</div>
-                                <div class="mt-6 text-5xl font-black text-emerald-400">${ass.points}</div>
-                                <div class="text-xs text-emerald-300 -mt-1">نقطة</div>
-                            </div>
-                        </div>
-                        
-                        <p class="mt-8 text-slate-300 line-clamp-3">${ass.description}</p>
-                        
-                        <div class="flex justify-between items-center mt-12">
-                            <div class="text-xs text-slate-400">بواسطة ${ass.postedBy}</div>
-                            ${currentUser.role === 'student' ? 
-                                (isSubmitted ? 
-                                    `<div class="flex items-center gap-2 bg-emerald-500/20 text-emerald-400 px-6 py-3 rounded-3xl text-sm"><i class="fa-solid fa-check"></i> تم التسليم</div>` : 
-                                    `<button onclick="event.stopImmediatePropagation(); submitThisAssignment(${ass.id});" class="bg-gradient-to-r from-emerald-500 to-cyan-400 px-8 py-3 rounded-3xl text-sm font-medium">تسليم الآن</button>`) 
-                                : ''}
+                    <div onclick="openAssignment(${a.id})" class="assignment-card glass rounded-3xl p-10 cursor-pointer card">
+                        <div class="flex justify-between"><span class="text-cyan-300 uppercase text-sm">${a.subject}</span><span class="text-emerald-400 text-xl">${a.points} نقطة</span></div>
+                        <h3 class="text-3xl font-bold mt-6">${a.title}</h3>
+                        <p class="mt-4 text-slate-300">${a.desc}</p>
+                        <div class="mt-12 flex justify-between items-center">
+                            <span class="text-sm text-slate-400">تسليم قبل ${a.due}</span>
+                            ${submitted ? `<span class="px-6 py-3 bg-emerald-500 rounded-3xl text-sm flex items-center gap-2"><i class="fa-solid fa-check"></i> تم التسليم • درجة ${submitted.grade || '—'}</span>` : `<button onclick="event.stopImmediatePropagation();openAssignment(${a.id});" class="bg-gradient-to-r from-emerald-500 to-cyan-400 px-8 py-4 rounded-3xl">ابدأ الحل الآن</button>`}
                         </div>
                     </div>`
                 })
                 html += `</div></div>`
                 content.innerHTML = html
             }
-            
+
+            else if (page === 'grades') {
+                let html = `<div class="max-w-5xl mx-auto"><h2 class="text-4xl font-bold mb-8">الدرجات والتقييمات</h2>`
+                if (currentUser.role === 'student') {
+                    const myGrades = grades[currentUser.id] || []
+                    html += `<div class="glass rounded-3xl p-8"><table class="w-full"><thead><tr><th class="py-5 text-start">المادة</th><th class="py-5 text-start">الدرجة</th><th class="py-5 text-start">تعليق المعلم</th></tr></thead><tbody>`
+                    myGrades.forEach(g => html += `<tr class="border-t border-white/10"><td class="py-6">${g.subject}</td><td class="py-6 text-emerald-400 font-bold">${g.grade}/100</td><td class="py-6">${g.comment}</td></tr>`)
+                    html += `</tbody></table></div>`
+                } else if (currentUser.role === 'teacher') {
+                    html += `<button onclick="openGradeModal()" class="mb-8 bg-blue-600 px-8 py-4 rounded-3xl">إضافة درجة لطالب</button><div id="grades-list"></div>`
+                }
+                content.innerHTML = html
+                if (currentUser.role === 'teacher') renderTeacherGrades()
+            }
+
+            else if (page === 'timetable') {
+                let html = `<div class="max-w-7xl mx-auto"><h2 class="text-4xl font-bold mb-8">الجدول الدراسي</h2><div class="grid grid-cols-7 gap-4">`
+                const days = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"]
+                days.forEach((day,i) => {
+                    html += `<div class="glass rounded-3xl p-6"><div class="font-bold text-xl mb-6">${day}</div>`
+                    const dayLessons = timetable.filter(t => t.day === day)
+                    if (dayLessons.length) {
+                        dayLessons.forEach(l => html += `<div class="mb-6 bg-white/10 rounded-2xl p-5"><div class="font-medium">${l.time}</div><div class="text-cyan-300">${l.subject}</div><div class="text-xs text-slate-400">${l.teacher}</div></div>`)
+                    } else html += `<div class="text-slate-400">لا يوجد حصص</div>`
+                    html += `</div>`
+                })
+                html += `</div></div>`
+                content.innerHTML = html
+            }
+
+            else if (page === 'teachers') {
+                let html = `<div class="max-w-6xl mx-auto"><h2 class="text-4xl font-bold mb-8">قائمة المعلمين • تواصل مباشر</h2><div class="grid grid-cols-3 gap-8">`
+                teachers.forEach(t => {
+                    html += `
+                    <div class="glass rounded-3xl p-8 card">
+                        <div class="text-6xl mb-4">${t.avatar}</div>
+                        <div class="font-bold text-2xl">${t.name}</div>
+                        <div class="text-sm text-slate-400">${t.email}</div>
+                        <button onclick="startChatWith('${t.username}')" class="mt-8 w-full py-5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-3xl">مراسلة</button>
+                    </div>`
+                })
+                html += `</div></div>`
+                content.innerHTML = html
+            }
+
+            else if (page === 'child-progress' && currentUser.role === 'guardian') {
+                const child = users.find(u => u.id === currentUser.childId)
+                content.innerHTML = `
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-4xl font-bold mb-8">تقدم طفلي: ${child ? child.name : '—'}</h2>
+                    <div class="glass rounded-3xl p-10">
+                        <div class="flex justify-between mb-8"><div>النقاط الحالية</div><div class="text-5xl font-bold text-emerald-400">${child ? child.points : 0}</div></div>
+                        <button onclick="openChatWithTeacher()" class="w-full py-7 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-3xl text-2xl">ناقش مع المعلم مباشرة</button>
+                    </div>
+                </div>`
+            }
+
+            else if (page === 'meetings' && (currentUser.role === 'teacher' || currentUser.role === 'principal')) {
+                content.innerHTML = `
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-4xl font-bold mb-8">غرف الاجتماعات الافتراضية</h2>
+                    <div class="space-y-6">
+                        ${meetings.map(m => `
+                        <div onclick="joinMeeting(${m.id})" class="glass rounded-3xl p-8 flex justify-between items-center cursor-pointer card">
+                            <div>
+                                <div class="font-bold text-2xl">${m.title}</div>
+                                <div class="text-slate-400">${m.time} • ${m.participants}</div>
+                            </div>
+                            <button class="px-10 py-6 bg-emerald-500 rounded-3xl text-xl">انضمام</button>
+                        </div>`).join('')}
+                    </div>
+                </div>`
+            }
+
             else if (page === 'my-points' && currentUser.role === 'student') {
-                content.innerHTML = `
-                <div class="max-w-3xl mx-auto text-center py-20">
-                    <div class="inline-flex items-center justify-center w-32 h-32 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-full text-8xl mb-10 shadow-2xl">🏆</div>
-                    <div class="text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-400">${currentUser.points || 0}</div>
-                    <div class="text-4xl font-medium text-slate-300 mt-2">نقطة إجمالية</div>
-                    
-                    <div class="mt-20 glass rounded-3xl p-10">
-                        <h3 class="text-2xl font-bold mb-8">الواجبات المكتملة</h3>
-                        <div class="space-y-5 text-start" id="completed-list"></div>
-                    </div>
-                </div>`
-                renderCompletedList()
-            }
-            
-            else if (page === 'create-assignment' && currentUser.role === 'teacher') {
-                content.innerHTML = `
-                <div class="max-w-2xl mx-auto glass rounded-3xl p-12">
-                    <h1 class="text-4xl font-bold mb-10">إنشاء واجب جديد</h1>
-                    <div class="space-y-8">
-                        <div>
-                            <label class="block text-slate-400 mb-3">عنوان الواجب</label>
-                            <input id="ass-title" type="text" class="w-full glass border border-white/30 rounded-2xl py-6 px-7 text-lg" placeholder="مثال: تمارين الفيزياء">
-                        </div>
-                        <div>
-                            <label class="block text-slate-400 mb-3">المادة</label>
-                            <input id="ass-subject" type="text" value="رياضيات" class="w-full glass border border-white/30 rounded-2xl py-6 px-7 text-lg">
-                        </div>
-                        <div>
-                            <label class="block text-slate-400 mb-3">الوصف</label>
-                            <textarea id="ass-desc" rows="6" class="w-full glass border border-white/30 rounded-3xl py-6 px-7 text-lg resize-none" placeholder="تفاصيل الواجب..."></textarea>
-                        </div>
-                        <div class="grid grid-cols-2 gap-8">
-                            <div>
-                                <label class="block text-slate-400 mb-3">تاريخ التسليم</label>
-                                <input id="ass-due" type="date" value="2026-04-28" class="w-full glass border border-white/30 rounded-2xl py-6 px-7">
-                            </div>
-                            <div>
-                                <label class="block text-slate-400 mb-3">النقاط</label>
-                                <input id="ass-points" type="number" value="30" class="w-full glass border border-white/30 rounded-2xl py-6 px-7">
-                            </div>
-                        </div>
-                        <button onclick="createNewAssignment()" class="w-full py-7 bg-gradient-to-r from-cyan-500 to-blue-600 text-xl font-bold rounded-3xl">نشر الواجب للطلاب</button>
-                    </div>
-                </div>`
-            }
-            
-            else if (page === 'manage-students' && currentUser.role === 'principal') {
-                let table = `
-                <div class="max-w-6xl mx-auto">
-                    <div class="flex justify-between items-center mb-10">
-                        <h1 class="text-4xl font-bold">إدارة الطلاب</h1>
-                        <button onclick="showAddStudentModal()" class="flex items-center gap-3 bg-white text-black font-semibold px-8 py-5 rounded-3xl hover:bg-slate-200">
-                            <i class="fa-solid fa-user-plus"></i> إضافة طالب
-                        </button>
-                    </div>
-                    <div class="glass rounded-3xl overflow-hidden">
-                        <table class="w-full">
-                            <thead class="border-b border-white/10">
-                                <tr>
-                                    <th class="py-6 px-10 text-start">الاسم</th>
-                                    <th class="py-6 px-10 text-start">المستخدم</th>
-                                    <th class="py-6 px-10 text-start">النقاط</th>
-                                    <th class="py-6 px-10 text-center">إجراء</th>
-                                </tr>
-                            </thead>
-                            <tbody id="students-tbody" class="divide-y divide-white/10"></tbody>
-                        </table>
-                    </div>
-                </div>`
-                content.innerHTML = table
-                renderStudentsTable()
+                content.innerHTML = `<div class="max-w-2xl mx-auto text-center py-20"><div class="text-8xl">🏆</div><div class="text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-300">${currentUser.points || 0}</div><p class="text-4xl mt-4">نقطة إجمالية</p></div>`
             }
         }
-        
-        function getPageTitle(page) {
-            const titles = {
+
+        function getTitle(page) {
+            const map = {
                 home: "لوحة التحكم",
                 assignments: "الواجبات",
-                'my-points': "نقاطي",
-                'create-assignment': "إنشاء واجب",
-                'manage-students': "إدارة الطلاب",
-                progress: "تقدم الطلاب"
+                grades: "الدرجات والتقييم",
+                timetable: "الجدول الدراسي",
+                teachers: "المعلمين والتواصل",
+                'child-progress': "تقدم طفلي",
+                meetings: "غرف الاجتماعات",
+                'my-points': "نقاطي"
             }
-            return titles[page] || "SmartEdu"
+            return map[page] || "SmartEdu"
         }
-        
-        function renderRecentAssignments() {
-            const container = document.getElementById('recent-assignments')
-            if (!container) return
-            let str = ''
-            assignments.slice(0, 3).forEach(ass => {
-                str += `
-                <div onclick="viewAssignment(${ass.id})" class="glass rounded-3xl p-8 card cursor-pointer">
-                    <div class="text-cyan-300 text-sm">${ass.subject}</div>
-                    <div class="font-bold text-xl mt-4">${ass.title}</div>
-                    <div class="mt-10 flex justify-between">
-                        <span class="text-emerald-400 font-medium">${ass.points} نقطة</span>
-                        <span class="text-xs text-slate-400">${ass.dueDate}</span>
-                    </div>
-                </div>`
-            })
-            container.innerHTML = str
-        }
-        
-        function renderCompletedList() {
-            const container = document.getElementById('completed-list')
-            if (!container || !currentUser.completed) return
-            let html = ''
-            currentUser.completed.forEach(id => {
-                const ass = assignments.find(a => a.id === id)
-                if (ass) {
-                    html += `
-                    <div class="flex justify-between items-center bg-white/5 p-5 rounded-2xl">
-                        <div>${ass.title}</div>
-                        <div class="text-emerald-400 font-bold">+${ass.points}</div>
-                    </div>`
-                }
-            })
-            container.innerHTML = html || '<p class="text-slate-400">لم تقم بتسليم أي واجب بعد</p>'
-        }
-        
-        function renderStudentsTable() {
-            const tbody = document.getElementById('students-tbody')
-            if (!tbody) return
-            let rows = ''
-            users.filter(u => u.role === 'student').forEach(student => {
-                rows += `
-                <tr class="hover:bg-white/5">
-                    <td class="px-10 py-7">${student.name}</td>
-                    <td class="px-10 py-7 font-mono text-slate-300">${student.username}</td>
-                    <td class="px-10 py-7 text-emerald-400 font-bold">${student.points || 0}</td>
-                    <td class="px-10 py-7 text-center">
-                        <button onclick="deleteStudent(${student.id}); event.stopImmediatePropagation()" class="text-red-400 hover:text-red-500">حذف</button>
-                    </td>
-                </tr>`
-            })
-            tbody.innerHTML = rows
-        }
-        
-        // ==================== إنشاء واجب ====================
-        function createNewAssignment() {
-            const title = document.getElementById('ass-title').value
-            const subject = document.getElementById('ass-subject').value
-            const desc = document.getElementById('ass-desc').value
-            const due = document.getElementById('ass-due').value
-            const points = parseInt(document.getElementById('ass-points').value)
-            
-            if (!title || !desc) return alert("يرجى ملء العنوان والوصف")
-            
-            const newAss = {
-                id: Date.now(),
-                title,
-                subject: subject || "غير محدد",
-                description: desc,
-                dueDate: due,
-                points: points || 20,
-                postedBy: currentUser.username,
-                postedDate: new Date().toISOString().slice(0,10)
-            }
-            
-            assignments.unshift(newAss)
-            saveData()
-            alert("✅ تم نشر الواجب بنجاح!")
-            goToPage('assignments')
-        }
-        
-        // ==================== عرض الواجب ====================
-        window.viewAssignment = function(id) {
+
+        // ====================== فتح واجب + حل مباشر ======================
+        window.openAssignment = function(id) {
             const ass = assignments.find(a => a.id === id)
             if (!ass) return
-            
-            const isSubmitted = currentUser.role === 'student' && currentUser.completed && currentUser.completed.includes(id)
-            
-            let modalHTML = `
-                <div class="p-10">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <div class="text-cyan-300 text-sm">${ass.subject}</div>
-                            <h2 class="text-4xl font-bold mt-3">${ass.title}</h2>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-6xl font-black text-emerald-400">${ass.points}</div>
-                            <div class="text-xs -mt-2">نقطة</div>
-                        </div>
-                    </div>
-                    
-                    <div class="my-12 p-8 bg-white/5 rounded-3xl border border-white/10">
-                        ${ass.description}
-                    </div>
-                    
-                    <div class="flex items-center justify-between text-sm">
-                        <div>تاريخ التسليم: <span class="font-medium">${ass.dueDate}</span></div>
-                        ${currentUser.role === 'student' ? 
-                            (isSubmitted ? 
-                                `<span class="px-8 py-4 bg-emerald-500 rounded-3xl flex items-center gap-3"><i class="fa-solid fa-check-circle"></i> تم التسليم بنجاح</span>` : 
-                                `<button onclick="submitThisAssignment(${id}); hideModal()" class="px-10 py-4 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-3xl font-medium">تسليم الواجب الآن</button>`) 
-                            : '<button onclick="hideModal()" class="px-10 py-4 border border-white/30 rounded-3xl">إغلاق</button>'}
-                    </div>
-                </div>
-            `
-            
-            document.getElementById('modal-content').innerHTML = modalHTML
-            document.getElementById('modal').classList.remove('hidden')
-            document.getElementById('modal').classList.add('flex')
-        }
-        
-        window.submitThisAssignment = function(id) {
-            if (currentUser.role !== 'student') return
-            
-            if (!currentUser.completed) currentUser.completed = []
-            if (currentUser.completed.includes(id)) {
-                alert("تم تسليم هذا الواجب مسبقاً")
-                return
-            }
-            
-            currentUser.completed.push(id)
-            
-            const ass = assignments.find(a => a.id === id)
-            if (ass) {
-                currentUser.points = (currentUser.points || 0) + ass.points
-            }
-            
-            // تحديث المستخدم في القائمة
-            const idx = users.findIndex(u => u.id === currentUser.id)
-            if (idx > -1) users[idx] = currentUser
-            
-            saveData()
-            localStorage.setItem('smartedu_current', JSON.stringify(currentUser))
-            
-            hideModal()
-            alert(`🎉 تم تسليم الواجب بنجاح!\nحصلت على +${ass.points} نقطة`)
-            
-            // تحديث الصفحة الحالية
-            if (document.getElementById('page-title').textContent.includes('واجبات')) {
-                goToPage('assignments')
-            } else {
-                goToPage('home')
-            }
-        }
-        
-        // ==================== Modal Helpers ====================
-        function hideModal() {
-            const modal = document.getElementById('modal')
-            modal.classList.add('hidden')
-            modal.classList.remove('flex')
-        }
-        
-        function showAddStudentModal() {
+
+            const submitted = submissions[id] && submissions[id].find(s => s.studentId === currentUser.id)
+
             const html = `
-                <div class="p-10">
-                    <h2 class="text-3xl font-bold mb-8">إضافة طالب جديد</h2>
-                    <div class="space-y-6">
-                        <input id="new-student-name" placeholder="اسم الطالب الكامل" class="w-full glass border border-white/30 rounded-2xl py-5 px-6">
-                        <div class="grid grid-cols-2 gap-6">
-                            <input id="new-student-username" placeholder="اسم المستخدم" class="w-full glass border border-white/30 rounded-2xl py-5 px-6">
-                            <input id="new-student-pass" value="123" placeholder="كلمة المرور" class="w-full glass border border-white/30 rounded-2xl py-5 px-6">
-                        </div>
-                        <div class="flex gap-4">
-                            <button onclick="hideModal()" class="flex-1 py-6 border border-white/30 rounded-3xl">إلغاء</button>
-                            <button onclick="addNewStudent()" class="flex-1 py-6 bg-emerald-500 rounded-3xl">إضافة الطالب</button>
-                        </div>
-                    </div>
-                </div>
-            `
-            document.getElementById('modal-content').innerHTML = html
+            <div class="p-12">
+                <h2 class="text-4xl font-bold">${ass.title} <span class="text-emerald-400 text-2xl">(${ass.points} نقطة)</span></h2>
+                <p class="mt-6 text-slate-300">${ass.desc}</p>
+                
+                ${submitted ? `
+                <div class="mt-12 p-8 bg-emerald-500/10 border border-emerald-500 rounded-3xl">
+                    <div class="font-medium text-emerald-400">تم التسليم • الدرجة: ${submitted.grade || 'قيد التقييم'}</div>
+                    <div class="mt-4">${submitted.answer}</div>
+                </div>` : `
+                <div class="mt-12">
+                    <label class="block text-sm mb-4">اكتب إجابتك هنا (حل مباشر على المنصة)</label>
+                    <textarea id="student-answer" rows="12" class="w-full glass border border-white/30 rounded-3xl p-8 text-lg" placeholder="ابدأ بالكتابة..."></textarea>
+                    <button onclick="submitOnlineAnswer(${id})" class="mt-8 w-full py-7 bg-gradient-to-r from-emerald-500 to-cyan-400 text-2xl font-bold rounded-3xl">تسليم الإجابة الآن</button>
+                </div>`}
+                
+                <button onclick="hideModal()" class="mt-8 px-14 py-5 border border-white/30 rounded-3xl">إغلاق</button>
+            </div>`
+
+            document.getElementById('modal-body').innerHTML = html
             document.getElementById('modal').classList.remove('hidden')
             document.getElementById('modal').classList.add('flex')
         }
-        
-        function addNewStudent() {
-            const name = document.getElementById('new-student-name').value.trim()
-            const username = document.getElementById('new-student-username').value.trim()
-            const pass = document.getElementById('new-student-pass').value || "123"
-            
-            if (!name || !username) return alert("يرجى ملء الاسم واسم المستخدم")
-            
-            const newStudent = {
-                id: Date.now(),
-                username,
-                password: pass,
-                role: "student",
-                name,
-                points: 0,
-                avatar: "🎓",
-                completed: []
-            }
-            
-            users.push(newStudent)
-            saveData()
-            hideModal()
-            if (document.getElementById('students-tbody')) renderStudentsTable()
-            alert(`✅ تم إضافة ${name} بنجاح`)
-        }
-        
-        function deleteStudent(id) {
-            if (confirm("حذف هذا الطالب نهائياً؟")) {
-                users = users.filter(u => u.id !== id)
-                saveData()
-                renderStudentsTable()
-            }
-        }
-        
-        // ==================== إشعارات وملف شخصي ====================
-        function showNotifications() {
-            const notifs = [
-                {icon:"📚", text:"تم إضافة واجب جديد في الرياضيات", time:"منذ ٣٥ دقيقة"},
-                {icon:"🏆", text:"حصلت على ٤٠ نقطة إضافية", time:"أمس"}
-            ]
-            let str = `<div class="p-8"><h2 class="text-3xl font-bold mb-8">الإشعارات</h2>`
-            notifs.forEach(n => {
-                str += `<div class="flex gap-6 mb-8"><div class="text-4xl">${n.icon}</div><div><div>${n.text}</div><div class="text-xs text-slate-400 mt-1">${n.time}</div></div></div>`
+
+        window.submitOnlineAnswer = function(id) {
+            const answerText = document.getElementById('student-answer').value.trim()
+            if (!answerText) return alert('اكتب الإجابة أولاً')
+
+            if (!submissions[id]) submissions[id] = []
+            submissions[id].push({
+                studentId: currentUser.id,
+                answer: answerText,
+                submittedAt: new Date().toLocaleString('ar-SA'),
+                grade: null,
+                teacherComment: ''
             })
-            str += `</div>`
-            document.getElementById('modal-content').innerHTML = str
-            document.getElementById('modal').classList.remove('hidden')
-            document.getElementById('modal').classList.add('flex')
+
+            // إضافة نقاط مؤقتة للطالب
+            if (currentUser.role === 'student') {
+                currentUser.points = (currentUser.points || 0) + 10
+                const userIndex = users.findIndex(u => u.id === currentUser.id)
+                if (userIndex > -1) users[userIndex] = currentUser
+            }
+
+            saveAll()
+            hideModal()
+            alert('✅ تم تسليم الإجابة بنجاح على المنصة!')
+            goTo('assignments')
         }
-        
-        function showProfileModal() {
+
+        // ====================== إضافة درجة ======================
+        function openGradeModal() {
+            const students = users.filter(u => u.role === 'student')
+            let opts = students.map(s => `<option value="${s.id}">${s.name}</option>`).join('')
             const html = `
-                <div class="p-12 text-center">
-                    <div class="mx-auto w-28 h-28 text-7xl flex items-center justify-center bg-gradient-to-br ${roleColors[currentUser.role]} rounded-3xl mb-8">${currentUser.avatar}</div>
-                    <h2 class="text-4xl font-bold">${currentUser.name}</h2>
-                    <p class="text-xl text-slate-300 mt-2">${currentUser.role}</p>
-                    <p class="mt-8 text-slate-400">اسم المستخدم: <span class="font-mono">${currentUser.username}</span></p>
-                    ${currentUser.role === 'student' ? `<div class="mt-12 text-6xl font-black text-emerald-400">${currentUser.points} نقطة</div>` : ''}
-                    <button onclick="hideModal()" class="mt-16 px-16 py-5 border border-white/30 rounded-3xl text-lg">إغلاق</button>
-                </div>
-            `
-            document.getElementById('modal-content').innerHTML = html
+            <div class="p-12">
+                <h3 class="text-3xl font-bold mb-8">إضافة درجة</h3>
+                <select id="grade-student" class="w-full glass rounded-3xl py-6 px-8 mb-6">${opts}</select>
+                <input id="grade-subject" placeholder="المادة" class="w-full glass rounded-3xl py-6 px-8 mb-6" value="رياضيات">
+                <input id="grade-score" type="number" placeholder="الدرجة /100" class="w-full glass rounded-3xl py-6 px-8 mb-6" value="92">
+                <textarea id="grade-comment" placeholder="تعليق المعلم" class="w-full glass rounded-3xl py-6 px-8 h-32"></textarea>
+                <button onclick="saveGrade()" class="mt-8 w-full py-7 bg-emerald-500 rounded-3xl text-2xl">حفظ الدرجة</button>
+            </div>`
+            document.getElementById('modal-body').innerHTML = html
             document.getElementById('modal').classList.remove('hidden')
             document.getElementById('modal').classList.add('flex')
         }
-        
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar')
-            sidebar.style.display = sidebar.style.display === 'none' ? 'flex' : 'none'
+
+        window.saveGrade = function() {
+            const studentId = parseInt(document.getElementById('grade-student').value)
+            const subject = document.getElementById('grade-subject').value
+            const score = parseInt(document.getElementById('grade-score').value)
+            const comment = document.getElementById('grade-comment').value
+
+            if (!grades[studentId]) grades[studentId] = []
+            grades[studentId].push({subject, grade: score, comment, date: new Date().toLocaleDateString('ar-SA')})
+
+            // تحديث نقاط الطالب
+            const student = users.find(u => u.id === studentId)
+            if (student) student.points = (student.points || 0) + Math.round(score / 2)
+
+            saveAll()
+            hideModal()
+            alert('✅ تم حفظ الدرجة')
+            goTo('grades')
         }
-        
+
+        function renderTeacherGrades() {
+            // يمكن توسيعها لاحقاً
+            document.getElementById('grades-list').innerHTML = `<p class="text-slate-400">جميع الدرجات محفوظة في قاعدة البيانات الخاصة بالطالب</p>`
+        }
+
+        // ====================== تواصل + دردشة ======================
+        window.startChatWith = function(teacherUsername) {
+            const html = `
+            <div class="flex flex-col h-[80vh]">
+                <div class="p-6 border-b flex items-center justify-between bg-white/10">
+                    <div class="flex items-center gap-4"><span class="text-4xl">👨‍🏫</span><div><b>د. محمد الفهد</b><br><span class="text-xs">متصل الآن</span></div></div>
+                    <button onclick="hideModal()" class="text-2xl">✕</button>
+                </div>
+                <div class="flex-1 p-8 overflow-auto space-y-6" id="chat-window">
+                    <div class="chat-bubble bg-white/10 p-5 rounded-3xl rounded-tl-none ml-auto">مرحباً، هل يمكنك مراجعة واجبي؟</div>
+                </div>
+                <div class="p-6 border-t flex gap-4">
+                    <input id="chat-input" placeholder="اكتب رسالتك..." class="flex-1 glass rounded-3xl px-8 py-6">
+                    <button onclick="sendFakeMessage()" class="px-10 bg-blue-600 rounded-3xl">إرسال</button>
+                </div>
+            </div>`
+            document.getElementById('modal-body').innerHTML = html
+            document.getElementById('modal').classList.remove('hidden')
+            document.getElementById('modal').classList.add('flex')
+        }
+
+        window.sendFakeMessage = function() {
+            const input = document.getElementById('chat-input')
+            if (!input.value) return
+            const win = document.getElementById('chat-window')
+            win.innerHTML += `<div class="chat-bubble bg-white/10 p-5 rounded-3xl rounded-tr-none">${input.value}</div>`
+            input.value = ''
+            win.scrollTop = win.scrollHeight
+        }
+
+        function openChatWithTeacher() {
+            startChatWith('استاذ1')
+        }
+
+        // ====================== اجتماعات ======================
+        window.joinMeeting = function(id) {
+            hideModal()
+            const html = `
+            <div class="p-12 text-center">
+                <div class="mx-auto w-96 h-96 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-3xl flex flex-col items-center justify-center text-white mb-12">
+                    <div class="text-8xl mb-8">📹</div>
+                    <h3 class="text-4xl font-bold">غرفة الاجتماع مفتوحة</h3>
+                    <p class="mt-4">مشاركون: 8 أساتذة</p>
+                    <div class="mt-12 bg-white/20 rounded-3xl px-12 py-6 text-2xl">🎤 تتحدث الآن</div>
+                </div>
+                <button onclick="hideModal()" class="px-16 py-6 bg-red-500 rounded-3xl text-2xl">مغادرة الاجتماع</button>
+            </div>`
+            document.getElementById('modal-body').innerHTML = html
+            document.getElementById('modal').classList.remove('hidden')
+            document.getElementById('modal').classList.add('flex')
+        }
+
+        // ====================== باقي الدوال ======================
+        function hideModal() { 
+            const m = document.getElementById('modal')
+            m.classList.add('hidden')
+            m.classList.remove('flex')
+        }
+
+        function toggleSidebar() {
+            const s = document.getElementById('sidebar')
+            s.style.display = s.style.display === 'none' ? 'flex' : 'none'
+        }
+
+        function openNotifications() {
+            const html = `<div class="p-12"><h2 class="text-4xl mb-8">الإشعارات</h2><div class="space-y-8"><div class="flex gap-6"><div class="text-4xl">📚</div><div>واجب جديد في الرياضيات</div></div><div class="flex gap-6"><div class="text-4xl">📊</div><div>تم تقييم واجبك بـ ٩٨%</div></div></div></div>`
+            document.getElementById('modal-body').innerHTML = html
+            document.getElementById('modal').classList.remove('hidden')
+            document.getElementById('modal').classList.add('flex')
+        }
+
+        function openProfile() {
+            const html = `<div class="p-14 text-center"><div class="text-8xl mx-auto mb-8">${currentUser.avatar}</div><h2 class="text-4xl font-bold">${currentUser.name}</h2><p class="text-cyan-300 text-2xl">${currentUser.role}</p><button onclick="hideModal()" class="mt-16 px-16 py-6 border border-white/30 rounded-3xl">إغلاق</button></div>`
+            document.getElementById('modal-body').innerHTML = html
+            document.getElementById('modal').classList.remove('hidden')
+            document.getElementById('modal').classList.add('flex')
+        }
+
         function logout() {
-            if (confirm("تسجيل الخروج؟")) {
-                localStorage.removeItem('smartedu_current')
+            if (confirm('تسجيل الخروج؟')) {
+                localStorage.removeItem('v4_current')
                 location.reload()
             }
         }
-        
-        // ==================== تشغيل النظام ====================
+
+        // ====================== تشغيل المنصة ======================
         window.onload = () => {
-            initData()
-            
-            const saved = localStorage.getItem('smartedu_current')
+            initSystem()
+            const saved = localStorage.getItem('v4_current')
             if (saved) {
                 currentUser = JSON.parse(saved)
                 document.getElementById('login-screen').classList.add('hidden')
                 document.getElementById('dashboard').classList.remove('hidden')
-                renderDashboard()
+                renderFullDashboard()
             }
-            
-            // ربط تسجيل الدخول
             document.getElementById('login-form').addEventListener('submit', handleLogin)
-            
-            console.log('%c🚀 SmartEdu v3.0 جاهز! واجهة أقوى وسلسة ومتطورة', 'color:#67e8f9; font-size:16px; font-weight:900')
+            console.log('%c✅ SmartEdu v4.0 • منصة ضخمة متكاملة جاهزة!', 'color:#67e8f9;font-size:18px;font-weight:900')
         }
     </script>
 </body>
