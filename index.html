@@ -2,93 +2,108 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Super Market System</title>
+<title>Smart Supermarket POS</title>
 
 <style>
 body{
   margin:0;
   font-family:Arial;
-  background:#0e0e0e;
-  color:white;
+  background:#f4f8ff;
+  color:#1a1a1a;
 }
 
+/* HEADER */
 header{
-  background:#111;
+  background:#1e66ff;
+  color:white;
   padding:15px;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  border-bottom:2px solid orange;
 }
 
-h1{color:orange;margin:0;}
-
-button{
-  cursor:pointer;
-  border:none;
-  padding:8px 12px;
-  border-radius:6px;
-  font-weight:bold;
+header h1{
+  margin:0;
+  font-size:20px;
 }
 
-.orange{background:orange;}
-.red{background:#ff4d4d;color:white;}
-.green{background:#3ddc84;}
-
+/* LAYOUT */
 .container{
   display:flex;
-  gap:20px;
-  padding:20px;
+  gap:15px;
+  padding:15px;
 }
 
+/* PRODUCTS */
 .products{
   flex:3;
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:15px;
+  gap:10px;
 }
 
 .card{
-  background:#1a1a1a;
+  background:white;
   border-radius:10px;
   padding:10px;
-  text-align:center;
+  box-shadow:0 2px 8px rgba(0,0,0,0.08);
 }
 
-.card img{
+.card h3{
+  margin:5px 0;
+}
+
+.price{
+  color:#1e66ff;
+  font-weight:bold;
+}
+
+button{
+  background:#1e66ff;
+  color:white;
+  border:none;
+  padding:8px;
   width:100%;
-  height:120px;
-  object-fit:cover;
-  border-radius:10px;
+  border-radius:6px;
+  cursor:pointer;
 }
 
+/* CART */
 .cart{
   flex:1;
-  background:#1a1a1a;
-  padding:15px;
+  background:white;
+  padding:10px;
   border-radius:10px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.08);
   height:fit-content;
 }
 
 .item{
   display:flex;
   justify-content:space-between;
-  margin:5px 0;
-  border-bottom:1px solid #333;
-  padding:5px;
+  border-bottom:1px solid #eee;
+  padding:5px 0;
+}
+
+.total{
+  font-size:18px;
+  margin-top:10px;
+  color:#1e66ff;
+}
+
+/* ADMIN */
+.admin{
+  margin:15px;
+  padding:15px;
+  background:white;
+  border-radius:10px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.08);
 }
 
 input{
   padding:8px;
-  margin:5px 0;
-  width:90%;
-}
-
-.admin-panel{
-  display:none;
-  padding:20px;
-  background:#151515;
-  border-top:2px solid orange;
+  margin:5px;
+  width:200px;
 }
 </style>
 </head>
@@ -96,12 +111,7 @@ input{
 <body>
 
 <header>
-<h1>🏪 Super Market</h1>
-
-<div>
-<button class="orange" onclick="toggleAdmin()">Admin</button>
-<button class="red" onclick="logoutAdmin()">Logout</button>
-</div>
+<h1>🏪 Smart Supermarket POS</h1>
 </header>
 
 <div class="container">
@@ -111,49 +121,45 @@ input{
 
 <!-- CART -->
 <div class="cart">
-<h2>🛒 Cart</h2>
+<h3>🛒 Cart</h3>
 <div id="cart"></div>
-<h3>Total: <span id="total">0</span> SAR</h3>
-<button class="green" onclick="checkout()">Checkout</button>
+<div class="total">Total: <span id="total">0</span> SAR</div>
+<button onclick="checkout()">Checkout</button>
 </div>
 
 </div>
 
-<!-- ADMIN PANEL -->
-<div class="admin-panel" id="admin">
+<!-- ADMIN -->
+<div class="admin">
+<h3>➕ Add Product (Admin)</h3>
 
-<h2>🧑‍💼 Admin Panel</h2>
+<input id="name" placeholder="Product name">
+<input id="price" type="number" placeholder="Price">
+<input id="qty" type="number" placeholder="Qty">
 
-<input id="pname" placeholder="Product Name">
-<input id="pprice" type="number" placeholder="Price">
-<input id="pimg" placeholder="Image URL">
-
-<button class="green" onclick="addProduct()">Add Product</button>
-
-<h3>Products List</h3>
-<div id="adminList"></div>
-
+<button onclick="addProduct()">Add Product</button>
 </div>
 
 <script>
 
 let products = JSON.parse(localStorage.getItem("products")) || [
-  {name:"Milk", price:5, img:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400"},
-  {name:"Bread", price:3, img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400"},
-  {name:"Eggs", price:12, img:"https://images.unsplash.com/photo-1506976785307-8732e854ad03?w=400"},
-  {name:"Apple", price:8, img:"https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?w=400"}
+  {name:"Milk", price:5, qty:10},
+  {name:"Bread", price:3, qty:15},
+  {name:"Eggs", price:12, qty:20},
+  {name:"Rice", price:20, qty:8},
+  {name:"Apple", price:8, qty:25},
+  {name:"Juice", price:6, qty:18}
 ];
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-let isAdmin = false;
-
+/* SAVE */
 function save(){
   localStorage.setItem("products", JSON.stringify(products));
   localStorage.setItem("cart", JSON.stringify(cart));
 }
 
-/* PRODUCTS */
+/* RENDER PRODUCTS */
 function renderProducts(){
   let div = document.getElementById("products");
   div.innerHTML = "";
@@ -161,30 +167,28 @@ function renderProducts(){
   products.forEach((p,i)=>{
     div.innerHTML += `
       <div class="card">
-        <img src="${p.img}">
         <h3>${p.name}</h3>
-        <p>${p.price} SAR</p>
-        <button class="orange" onclick="addToCart(${i})">Add</button>
+        <p class="price">${p.price} SAR</p>
+        <p>Stock: ${p.qty}</p>
+        <button onclick="addToCart(${i})">Add</button>
       </div>
     `;
   });
+}
 
-  renderAdmin();
+/* ADD TO CART */
+function addToCart(i){
+  if(products[i].qty <= 0) return alert("Out of stock!");
+
+  products[i].qty--;
+  cart.push(products[i]);
+
+  save();
+  renderProducts();
+  renderCart();
 }
 
 /* CART */
-function addToCart(i){
-  cart.push(products[i]);
-  save();
-  renderCart();
-}
-
-function removeItem(i){
-  cart.splice(i,1);
-  save();
-  renderCart();
-}
-
 function renderCart(){
   let div = document.getElementById("cart");
   div.innerHTML = "";
@@ -198,7 +202,6 @@ function renderCart(){
       <div class="item">
         <span>${c.name}</span>
         <span>${c.price}</span>
-        <button class="red" onclick="removeItem(${i})">X</button>
       </div>
     `;
   });
@@ -208,59 +211,26 @@ function renderCart(){
 
 /* CHECKOUT */
 function checkout(){
-  alert("Payment Successful 💰 Total: " + document.getElementById("total").innerText + " SAR");
+  alert("Payment Done 💙 Total: " + document.getElementById("total").innerText);
   cart = [];
   save();
   renderCart();
 }
 
-/* ADMIN */
-function toggleAdmin(){
-  let pass = prompt("Enter Admin Password:");
-  if(pass === "1234"){
-    isAdmin = true;
-    document.getElementById("admin").style.display = "block";
-  }else{
-    alert("Wrong Password");
-  }
-}
-
-function logoutAdmin(){
-  isAdmin = false;
-  document.getElementById("admin").style.display = "none";
-}
-
+/* ADMIN ADD */
 function addProduct(){
-  let name = document.getElementById("pname").value;
-  let price = document.getElementById("pprice").value;
-  let img = document.getElementById("pimg").value;
+  let name = document.getElementById("name").value;
+  let price = document.getElementById("price").value;
+  let qty = document.getElementById("qty").value;
 
-  if(!name || !price || !img) return;
+  if(!name || !price || !qty) return;
 
-  products.push({name, price:Number(price), img});
-
-  save();
-  renderProducts();
-}
-
-/* ADMIN LIST */
-function renderAdmin(){
-  let div = document.getElementById("adminList");
-  if(!div) return;
-  div.innerHTML = "";
-
-  products.forEach((p,i)=>{
-    div.innerHTML += `
-      <div class="item">
-        <span>${p.name}</span>
-        <button class="red" onclick="deleteProduct(${i})">Delete</button>
-      </div>
-    `;
+  products.push({
+    name,
+    price:Number(price),
+    qty:Number(qty)
   });
-}
 
-function deleteProduct(i){
-  products.splice(i,1);
   save();
   renderProducts();
 }
