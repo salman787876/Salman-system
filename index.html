@@ -1,434 +1,931 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بقالة سلمان برو - النظام المتطور</title>
+    <title>نظام المدرسة الذكي - Smart School</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;900&display=swap');
-        * { font-family: 'Cairo', sans-serif; }
-        body { background: #0f172a; color: #e2e8f0; }
-        .glass { background: rgba(15,23,42,0.95); backdrop-filter: blur(12px); border: 1px solid rgba(34,211,238,0.2); }
-        .nav-item:hover { background: #22d3ee; color: #0f172a; transform: translateX(-8px); }
-        .page { display: none; }
-        .page.active { display: block; }
-        .receipt { width: 340px; background: white; color: black; padding: 25px; border: 4px dashed #0ea5e9; }
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        .tail-container {
+            background: linear-gradient(135deg, #0f172a 0%, #1e2937 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        
+        .modal {
+            animation: modalPop 0.3s ease;
+        }
+        
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .sidebar-link {
+            transition: all 0.2s;
+        }
+        
+        .sidebar-link.active {
+            background-color: #3b82f6;
+            color: white;
+            border-radius: 12px;
+        }
+        
+        .rtl-flip {
+            transform: scaleX(-1);
+        }
     </style>
 </head>
-<body>
-
-    <!-- Login Page -->
-    <div id="login-page" class="fixed inset-0 bg-[#0f172a] flex items-center justify-center z-50">
-        <div class="glass rounded-3xl p-12 w-full max-w-md">
-            <div class="text-center mb-10">
-                <div class="mx-auto w-24 h-24 bg-gradient-to-br from-cyan-400 to-teal-500 rounded-3xl flex items-center justify-center text-6xl">🛒</div>
-                <h1 class="text-4xl font-black text-white mt-6">بقالة سلمان برو</h1>
-                <p class="text-cyan-300">نظام إدارة البقالة المتطور</p>
+<body class="tail-container text-white min-h-screen">
+    <!-- شاشة تسجيل الدخول -->
+    <div id="login-screen" class="min-h-screen flex items-center justify-center p-6">
+        <div class="bg-white/10 backdrop-blur-3xl rounded-3xl shadow-2xl p-10 max-w-md w-full border border-white/20">
+            <div class="flex flex-col items-center mb-10">
+                <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-2xl flex items-center justify-center text-4xl mb-4 shadow-inner">
+                    🏫
+                </div>
+                <h1 class="text-4xl font-bold tracking-tight">نظام المدرسة الذكي</h1>
+                <p class="text-blue-300 mt-2 text-lg">Smart School System</p>
+                <p class="text-sm text-slate-400 mt-1">متطور • حديث • متكامل</p>
             </div>
-            <input id="username" type="text" value="salman" placeholder="اسم المستخدم" class="w-full bg-slate-800 border border-slate-600 rounded-3xl px-6 py-5 mb-4 text-lg">
-            <input id="password" type="password" value="1234" placeholder="كلمة المرور" class="w-full bg-slate-800 border border-slate-600 rounded-3xl px-6 py-5 mb-8 text-lg">
-            <button onclick="login()" class="w-full bg-gradient-to-r from-cyan-500 to-teal-500 py-6 rounded-3xl text-white text-2xl font-bold">تسجيل الدخول</button>
+            
+            <form id="login-form" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-2">اسم المستخدم</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-user absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="username" 
+                               class="w-full bg-white/10 border border-white/30 focus:border-blue-400 rounded-2xl py-4 px-6 text-white placeholder:text-slate-400 focus:outline-none text-lg"
+                               placeholder="مثال: طالب1 أو استاذ1" required>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-2">كلمة المرور</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-lock absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="password" id="password" 
+                               class="w-full bg-white/10 border border-white/30 focus:border-blue-400 rounded-2xl py-4 px-6 text-white placeholder:text-slate-400 focus:outline-none text-lg"
+                               placeholder="••••••••" value="123" required>
+                    </div>
+                </div>
+                
+                <div class="pt-4">
+                    <button type="submit"
+                            class="w-full bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-semibold py-5 rounded-2xl text-xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        تسجيل الدخول
+                    </button>
+                </div>
+            </form>
+            
+            <div class="mt-8 text-center text-slate-400 text-sm">
+                <p>حسابات جاهزة للتجربة:</p>
+                <div class="grid grid-cols-2 gap-4 mt-3 text-xs">
+                    <div class="bg-white/5 rounded-2xl p-3 text-start">
+                        <span class="font-bold text-blue-400">المدير:</span><br>
+                        مدير • 123
+                    </div>
+                    <div class="bg-white/5 rounded-2xl p-3 text-start">
+                        <span class="font-bold text-emerald-400">الأستاذ:</span><br>
+                        استاذ1 • 123
+                    </div>
+                    <div class="bg-white/5 rounded-2xl p-3 text-start">
+                        <span class="font-bold text-amber-400">الطالب:</span><br>
+                        طالب1 • 123
+                    </div>
+                    <div class="bg-white/5 rounded-2xl p-3 text-start">
+                        <span class="font-bold text-purple-400">الوكيل:</span><br>
+                        وكيل1 • 123
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center text-[10px] text-slate-500 mt-8">
+                نظام كامل بـ HTML + Tailwind + JS • جاهز للرفع على GitHub
+            </div>
         </div>
     </div>
-
-    <!-- Main App -->
-    <div id="main-app" class="hidden flex flex-col h-screen">
-
-        <header class="bg-slate-900 border-b border-slate-700 px-8 py-5 flex items-center justify-between">
+    
+    <!-- لوحة التحكم الرئيسية -->
+    <div id="dashboard-screen" class="hidden min-h-screen flex flex-col">
+        
+        <!-- Navbar -->
+        <nav class="bg-white/10 backdrop-blur-xl border-b border-white/10 px-8 py-4 flex items-center justify-between sticky top-0 z-50">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-2xl flex items-center justify-center text-3xl">
+                    🏫
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold">نظام المدرسة الذكي</h1>
+                    <p class="text-xs text-blue-300 -mt-1">Smart School v2.0</p>
+                </div>
+            </div>
+            
             <div class="flex items-center gap-6">
-                <button onclick="logout()" class="bg-red-900/60 hover:bg-red-900 px-6 py-3 rounded-3xl flex items-center gap-2 text-red-300">
-                    <i class="fa-solid fa-right-from-bracket"></i> خروج
-                </button>
-                <div class="bg-slate-800 px-6 py-3 rounded-3xl flex items-center gap-3">
-                    <i class="fa-solid fa-user text-cyan-400"></i>
+                <!-- إشعارات -->
+                <div onclick="showNotifications()" class="relative cursor-pointer">
+                    <i class="fa-solid fa-bell text-2xl"></i>
+                    <span id="notification-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                </div>
+                
+                <!-- معلومات المستخدم -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="showProfile()">
+                    <div id="user-avatar" class="w-9 h-9 bg-blue-500 rounded-2xl flex items-center justify-center font-bold text-lg"></div>
                     <div>
-                        <div id="header-name" class="font-bold"></div>
-                        <div id="header-role" class="text-xs text-slate-400"></div>
+                        <div id="user-name" class="font-semibold text-lg leading-none"></div>
+                        <div id="user-role" class="text-xs text-slate-400"></div>
                     </div>
                 </div>
+                
+                <!-- زر تسجيل الخروج -->
+                <button onclick="logout()" 
+                        class="flex items-center gap-2 bg-white/10 hover:bg-red-500/20 hover:text-red-300 px-6 py-3 rounded-2xl text-sm font-medium transition-colors">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    تسجيل الخروج
+                </button>
             </div>
-            <div class="text-3xl font-black text-white flex items-center gap-3">
-                <i class="fa-solid fa-store text-cyan-400"></i> بقالة سلمان برو
-            </div>
-            <div class="flex items-center gap-6">
-                <div id="current-date" class="font-medium"></div>
-                <button onclick="toggleLanguage()" class="bg-slate-800 px-5 py-2 rounded-3xl">🌐 اللغة</button>
-            </div>
-        </header>
-
+        </nav>
+        
         <div class="flex flex-1 overflow-hidden">
-
+            
             <!-- Sidebar -->
-            <div class="w-72 bg-slate-900 border-l border-slate-700 p-6 flex flex-col">
-                <div class="flex-1 space-y-2">
-                    <div onclick="showPage('dashboard')" class="nav-item active flex items-center gap-4 px-6 py-5 rounded-3xl cursor-pointer text-white font-medium">
-                        <i class="fa-solid fa-gauge-high w-6"></i> لوحة التحكم
-                    </div>
-                    <div onclick="showPage('pos')" class="nav-item flex items-center gap-4 px-6 py-5 rounded-3xl cursor-pointer text-white font-medium">
-                        <i class="fa-solid fa-cash-register w-6"></i> نقطة البيع
-                    </div>
-                    <div onclick="showPage('products')" class="nav-item flex items-center gap-4 px-6 py-5 rounded-3xl cursor-pointer text-white font-medium" id="products-menu">
-                        <i class="fa-solid fa-boxes-stacked w-6"></i> المنتجات
-                    </div>
-                    <div onclick="showPage('customers')" class="nav-item flex items-center gap-4 px-6 py-5 rounded-3xl cursor-pointer text-white font-medium">
-                        <i class="fa-solid fa-users w-6"></i> العملاء والولاء
-                    </div>
-                    <div onclick="showPage('reports')" class="nav-item flex items-center gap-4 px-6 py-5 rounded-3xl cursor-pointer text-white font-medium">
-                        <i class="fa-solid fa-chart-line w-6"></i> التقارير
-                    </div>
-                    <div onclick="showPage('invoices')" class="nav-item flex items-center gap-4 px-6 py-5 rounded-3xl cursor-pointer text-white font-medium">
-                        <i class="fa-solid fa-file-invoice w-6"></i> الفواتير
-                    </div>
-                </div>
-
-                <div id="admin-section" class="hidden border-t pt-8">
-                    <div onclick="showPage('users-management')" class="nav-item flex items-center gap-4 px-6 py-5 rounded-3xl cursor-pointer text-white font-medium">
-                        <i class="fa-solid fa-users-gear w-6"></i> إدارة الموظفين
-                    </div>
-                </div>
+            <div id="sidebar" class="w-72 bg-white/5 backdrop-blur-3xl border-l border-white/10 p-6 flex flex-col">
+                <!-- سيتم ملؤه ديناميكياً بالـ JavaScript -->
             </div>
-
-            <!-- Main Content -->
-            <div class="flex-1 overflow-auto p-10">
-
-                <div id="dashboard" class="page active">
-                    <h1 class="text-5xl font-black">مرحباً <span id="welcome-name" class="text-cyan-400"></span></h1>
-                    <div class="grid grid-cols-4 gap-6 mt-12">
-                        <div class="glass p-8 rounded-3xl">
-                            <p class="text-cyan-400">مبيعات اليوم</p>
-                            <p id="today-sales" class="text-6xl font-black mt-4">0 ر.س</p>
+            
+            <!-- المحتوى الرئيسي -->
+            <div class="flex-1 p-8 overflow-auto" id="main-content">
+                <!-- يتم تحميل الصفحات هنا ديناميكياً -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal عام -->
+    <div id="modal" onclick="if(event.target.id === 'modal') hideModal()" 
+         class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[9999] flex items-center justify-center">
+        <div onclick="event.stopImmediatePropagation()" 
+             class="modal bg-slate-900 rounded-3xl w-full max-w-lg mx-4 shadow-2xl overflow-hidden">
+            <!-- محتوى المودال يتم إضافته عبر JS -->
+        </div>
+    </div>
+    
+    <script>
+        // =============================================
+        // بيانات النظام (يتم حفظها في localStorage)
+        // =============================================
+        let currentUser = null
+        let users = []
+        let assignments = []
+        let notifications = [
+            { id: 1, title: "تم إضافة واجب جديد", time: "منذ ٢٣ دقيقة", icon: "📚" },
+            { id: 2, title: "تهانينا! حصلت على ٢٠ نقطة", time: "منذ ساعة", icon: "🏆" },
+            { id: 3, title: "المدير أضاف طالب جديد", time: "أمس", icon: "👤" }
+        ]
+        
+        // ترجمة الأدوار
+        const roleNames = {
+            principal: "المدير",
+            teacher: "الأستاذ",
+            student: "الطالب",
+            guardian: "الوكيل"
+        }
+        
+        // =============================================
+        // تحميل البيانات الأولية
+        // =============================================
+        function loadInitialData() {
+            // المستخدمين
+            if (!localStorage.getItem('school_users')) {
+                users = [
+                    {
+                        id: 1,
+                        username: "مدير",
+                        password: "123",
+                        role: "principal",
+                        name: "أحمد بن خالد المدير",
+                        points: null
+                    },
+                    {
+                        id: 2,
+                        username: "استاذ1",
+                        password: "123",
+                        role: "teacher",
+                        name: "محمد الأستاذ",
+                        points: null
+                    },
+                    {
+                        id: 3,
+                        username: "طالب1",
+                        password: "123",
+                        role: "student",
+                        name: "علي بن سعود",
+                        points: 245,
+                        completed: [1, 2]
+                    },
+                    {
+                        id: 4,
+                        username: "وكيل1",
+                        password: "123",
+                        role: "guardian",
+                        name: "فاطمة الوكيل",
+                        points: null
+                    }
+                ]
+                localStorage.setItem('school_users', JSON.stringify(users))
+            } else {
+                users = JSON.parse(localStorage.getItem('school_users'))
+            }
+            
+            // الواجبات
+            if (!localStorage.getItem('school_assignments')) {
+                assignments = [
+                    {
+                        id: 1,
+                        title: "واجب الرياضيات - الجبر",
+                        description: "حل ١٥ مسألة جبرية من الكتاب صفحة ٤٥ + شرح الخطوات",
+                        dueDate: "2026-04-25",
+                        points: 25,
+                        postedBy: "استاذ1",
+                        postedDate: "2026-04-10"
+                    },
+                    {
+                        id: 2,
+                        title: "واجب العلوم - الطاقة المتجددة",
+                        description: "اكتب تقريرًا من ٣ صفحات عن أنواع الطاقة الشمسية والرياح مع أمثلة محلية",
+                        dueDate: "2026-04-30",
+                        points: 20,
+                        postedBy: "استاذ1",
+                        postedDate: "2026-04-12"
+                    },
+                    {
+                        id: 3,
+                        title: "واجب اللغة العربية - الإملاء",
+                        description: "اكتب ١٠ كلمات تحتوي على همزة الوصل وهمزة القطع",
+                        dueDate: "2026-04-22",
+                        points: 15,
+                        postedBy: "استاذ1",
+                        postedDate: "2026-04-15"
+                    }
+                ]
+                localStorage.setItem('school_assignments', JSON.stringify(assignments))
+            } else {
+                assignments = JSON.parse(localStorage.getItem('school_assignments'))
+            }
+            
+            // تحميل المستخدم الحالي إذا كان مسجل دخوله
+            const savedUser = localStorage.getItem('school_current_user')
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser)
+            }
+        }
+        
+        function saveUsers() {
+            localStorage.setItem('school_users', JSON.stringify(users))
+        }
+        
+        function saveAssignments() {
+            localStorage.setItem('school_assignments', JSON.stringify(assignments))
+        }
+        
+        // =============================================
+        // تسجيل الدخول
+        // =============================================
+        function handleLogin(e) {
+            e.preventDefault()
+            
+            const username = document.getElementById('username').value.trim()
+            const password = document.getElementById('password').value.trim()
+            
+            const user = users.find(u => u.username === username && u.password === password)
+            
+            if (user) {
+                currentUser = { ...user }
+                localStorage.setItem('school_current_user', JSON.stringify(currentUser))
+                
+                // إخفاء شاشة الدخول
+                document.getElementById('login-screen').classList.add('hidden')
+                document.getElementById('dashboard-screen').classList.remove('hidden')
+                
+                renderFullDashboard()
+            } else {
+                const form = document.getElementById('login-form')
+                form.classList.add('animate-pulse')
+                setTimeout(() => form.classList.remove('animate-pulse'), 600)
+                alert('❌ اسم المستخدم أو كلمة المرور غير صحيحة')
+            }
+        }
+        
+        // =============================================
+        // عرض لوحة التحكم الكاملة
+        // =============================================
+        function renderFullDashboard() {
+            // Sidebar حسب الدور
+            const sidebarHTML = `
+                <div class="mb-8">
+                    <div class="px-4 py-2 bg-white/10 rounded-3xl flex items-center gap-3">
+                        <div class="flex-1">
+                            <div class="text-sm text-slate-400">مرحباً</div>
+                            <div class="font-bold text-xl">${currentUser.name}</div>
                         </div>
-                        <div class="glass p-8 rounded-3xl">
-                            <p class="text-orange-400">فواتير اليوم</p>
-                            <p id="today-count" class="text-6xl font-black mt-4">0</p>
-                        </div>
-                        <div class="glass p-8 rounded-3xl">
-                            <p class="text-red-400">مخزون منخفض</p>
-                            <p id="low-stock" class="text-6xl font-black text-red-400 mt-4">0</p>
-                        </div>
-                        <div class="glass p-8 rounded-3xl">
-                            <p class="text-emerald-400">نقاط الولاء</p>
-                            <p id="total-points" class="text-6xl font-black text-emerald-400 mt-4">1240</p>
-                        </div>
+                        <div class="text-4xl">${currentUser.role === 'student' ? '🎓' : currentUser.role === 'teacher' ? '👨‍🏫' : currentUser.role === 'principal' ? '👑' : '👪'}</div>
                     </div>
                 </div>
-
-                <!-- POS -->
-                <div id="pos" class="page">
-                    <h2 class="text-4xl font-bold mb-8">نقطة البيع</h2>
-                    <div class="grid grid-cols-12 gap-8">
-                        <div class="col-span-7 glass rounded-3xl p-8">
-                            <input id="pos-search" placeholder="ابحث عن منتج..." class="w-full bg-slate-800 border border-slate-600 rounded-3xl px-8 py-6 text-xl mb-8" onkeyup="filterPosProducts()">
-                            <div id="pos-products" class="grid grid-cols-3 gap-6"></div>
+                
+                <nav class="space-y-1">
+                    <a onclick="navigateTo('home')" class="sidebar-link flex items-center gap-4 px-6 py-4 text-lg font-medium cursor-pointer">
+                        <i class="fa-solid fa-house w-6"></i>
+                        <span>الرئيسية</span>
+                    </a>
+                    <a onclick="navigateTo('assignments')" class="sidebar-link flex items-center gap-4 px-6 py-4 text-lg font-medium cursor-pointer">
+                        <i class="fa-solid fa-book w-6"></i>
+                        <span>الواجبات</span>
+                    </a>
+                    
+                    ${currentUser.role === 'student' ? `
+                    <a onclick="navigateTo('my-points')" class="sidebar-link flex items-center gap-4 px-6 py-4 text-lg font-medium cursor-pointer">
+                        <i class="fa-solid fa-trophy w-6"></i>
+                        <span>نقاطي</span>
+                    </a>` : ''}
+                    
+                    ${currentUser.role === 'teacher' ? `
+                    <a onclick="navigateTo('post-assignment')" class="sidebar-link flex items-center gap-4 px-6 py-4 text-lg font-medium cursor-pointer">
+                        <i class="fa-solid fa-plus w-6"></i>
+                        <span>نشر واجب جديد</span>
+                    </a>` : ''}
+                    
+                    ${currentUser.role === 'principal' ? `
+                    <a onclick="navigateTo('manage-users')" class="sidebar-link flex items-center gap-4 px-6 py-4 text-lg font-medium cursor-pointer">
+                        <i class="fa-solid fa-users w-6"></i>
+                        <span>إدارة الطلاب</span>
+                    </a>` : ''}
+                    
+                    ${currentUser.role === 'guardian' ? `
+                    <a onclick="navigateTo('student-progress')" class="sidebar-link flex items-center gap-4 px-6 py-4 text-lg font-medium cursor-pointer">
+                        <i class="fa-solid fa-chart-bar w-6"></i>
+                        <span>تقدم الطلاب</span>
+                    </a>` : ''}
+                    
+                    <a onclick="navigateTo('assignments')" class="sidebar-link flex items-center gap-4 px-6 py-4 text-lg font-medium cursor-pointer mt-8 border-t border-white/10 pt-6">
+                        <i class="fa-solid fa-calendar w-6"></i>
+                        <span>الجدول الدراسي</span>
+                    </a>
+                </nav>
+                
+                <div class="mt-auto pt-8">
+                    <div class="bg-gradient-to-br from-blue-600/30 to-cyan-400/30 rounded-3xl p-5 text-sm">
+                        <div class="flex justify-between items-center">
+                            <div>عدد الواجبات النشطة</div>
+                            <div class="font-bold text-3xl">${assignments.length}</div>
                         </div>
-                        <div class="col-span-5 glass rounded-3xl p-8 flex flex-col">
-                            <h3 class="text-2xl font-bold mb-6">السلة</h3>
-                            <div id="cart-items" class="flex-1 overflow-auto"></div>
-                            <div class="pt-8">
-                                <div class="flex justify-between text-4xl font-black text-cyan-400">
-                                    <span>الإجمالي</span>
-                                    <span id="cart-total">0 ر.س</span>
+                        <div class="text-xs text-blue-200 mt-1">آخر تحديث الآن</div>
+                    </div>
+                </div>
+            `
+            document.getElementById('sidebar').innerHTML = sidebarHTML
+            
+            // عرض الصفحة الرئيسية افتراضياً
+            navigateTo('home')
+            
+            // تحديث اسم المستخدم في الـ navbar
+            document.getElementById('user-name').textContent = currentUser.name
+            document.getElementById('user-role').innerHTML = `${roleNames[currentUser.role]} <span class="text-emerald-400">• متصل</span>`
+            document.getElementById('user-avatar').innerHTML = currentUser.name[0]
+        }
+        
+        // =============================================
+        // التنقل بين الصفحات
+        // =============================================
+        function navigateTo(page) {
+            const main = document.getElementById('main-content')
+            
+            // إزالة الـ active من كل الروابط
+            document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'))
+            
+            // إضافة active للرابط المختار (بسيط)
+            const links = document.querySelectorAll('.sidebar-link')
+            links.forEach(link => {
+                if (link.getAttribute('onclick').includes(page)) {
+                    link.classList.add('active')
+                }
+            })
+            
+            if (page === 'home') {
+                main.innerHTML = `
+                <div class="max-w-6xl mx-auto">
+                    <h1 class="text-5xl font-bold mb-2">مرحباً ${currentUser.name} 👋</h1>
+                    <p class="text-xl text-slate-300">دورك: <span class="font-semibold text-blue-400">${roleNames[currentUser.role]}</span></p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+                        <div class="bg-white/10 backdrop-blur-xl rounded-3xl p-8 card-hover">
+                            <div class="flex justify-between">
+                                <div>
+                                    <h3 class="text-blue-300 text-lg">الواجبات المتبقية</h3>
+                                    <div class="text-7xl font-bold mt-4">${assignments.length}</div>
                                 </div>
-                                <button onclick="checkout()" class="mt-10 w-full bg-gradient-to-r from-cyan-500 to-teal-500 py-7 rounded-3xl text-2xl font-bold">إنهاء البيع وطباعة الفاتورة</button>
+                                <i class="fa-solid fa-book text-7xl text-blue-400/30"></i>
+                            </div>
+                            <p class="text-slate-400 mt-8">هذا الأسبوع</p>
+                        </div>
+                        
+                        ${currentUser.role === 'student' ? `
+                        <div class="bg-white/10 backdrop-blur-xl rounded-3xl p-8 card-hover">
+                            <div class="flex justify-between">
+                                <div>
+                                    <h3 class="text-emerald-300 text-lg">نقاطك الحالية</h3>
+                                    <div class="text-7xl font-bold mt-4">${currentUser.points || 0}</div>
+                                </div>
+                                <i class="fa-solid fa-trophy text-7xl text-emerald-400/30"></i>
+                            </div>
+                            <p class="text-emerald-400 mt-8 flex items-center gap-2"><i class="fa-solid fa-arrow-trend-up"></i> +٤٥ نقطة هذا الشهر</p>
+                        </div>` : ''}
+                        
+                        <div class="bg-white/10 backdrop-blur-xl rounded-3xl p-8 card-hover">
+                            <div class="flex justify-between">
+                                <div>
+                                    <h3 class="text-purple-300 text-lg">الطلاب المسجلين</h3>
+                                    <div class="text-7xl font-bold mt-4">${users.filter(u => u.role === 'student').length}</div>
+                                </div>
+                                <i class="fa-solid fa-users text-7xl text-purple-400/30"></i>
+                            </div>
+                            <p class="text-slate-400 mt-8">في قاعدة بيانات النظام</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-16">
+                        <h2 class="text-2xl font-semibold mb-6 flex items-center gap-3"><i class="fa-solid fa-fire"></i> آخر الواجبات</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            ${assignments.slice(0, 3).map(ass => `
+                            <div onclick="viewAssignment(${ass.id})" class="bg-white/10 backdrop-blur-xl rounded-3xl p-6 cursor-pointer card-hover">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-blue-300">${ass.postedBy}</span>
+                                    <span class="text-slate-400">${ass.dueDate}</span>
+                                </div>
+                                <h4 class="font-semibold text-xl mt-4">${ass.title}</h4>
+                                <p class="text-slate-400 line-clamp-2 mt-2">${ass.description}</p>
+                                <div class="mt-6 flex justify-between items-center">
+                                    <div class="flex items-center gap-2 text-emerald-400">
+                                        <i class="fa-solid fa-coins"></i>
+                                        <span class="font-bold">${ass.points} نقطة</span>
+                                    </div>
+                                    <button class="text-xs bg-white/10 px-5 py-2 rounded-2xl hover:bg-blue-500">عرض التفاصيل</button>
+                                </div>
+                            </div>`).join('')}
+                        </div>
+                    </div>
+                </div>`
+            }
+            
+            else if (page === 'assignments') {
+                let html = `
+                <div class="max-w-6xl mx-auto">
+                    <div class="flex justify-between items-center mb-8">
+                        <h1 class="text-4xl font-bold">جميع الواجبات</h1>
+                        <div class="text-slate-400">${assignments.length} واجب نشط</div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">`
+                
+                assignments.forEach(ass => {
+                    let actionHTML = ''
+                    
+                    if (currentUser.role === 'student') {
+                        const isCompleted = currentUser.completed && currentUser.completed.includes(ass.id)
+                        actionHTML = isCompleted 
+                            ? `<span class="inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-400 px-6 py-3 rounded-3xl text-sm font-medium"><i class="fa-solid fa-check-circle"></i> تم التسليم</span>`
+                            : `<button onclick="submitAssignment(${ass.id}); event.stopImmediatePropagation()" class="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-cyan-400 px-6 py-3 rounded-3xl text-sm font-medium hover:scale-105">تسليم الواجب <i class="fa-solid fa-paper-plane"></i></button>`
+                    }
+                    
+                    html += `
+                    <div onclick="viewAssignment(${ass.id})" class="bg-white/10 backdrop-blur-xl rounded-3xl p-8 card-hover cursor-pointer">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <h3 class="font-bold text-2xl">${ass.title}</h3>
+                                <p class="text-slate-300 mt-4 leading-relaxed">${ass.description}</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs bg-white/10 px-4 py-1 rounded-3xl">${ass.dueDate}</div>
+                                <div class="mt-8 text-4xl font-bold text-emerald-400">${ass.points}</div>
+                                <div class="text-xs -mt-1 text-emerald-300">نقطة</div>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Products -->
-                <div id="products" class="page">
-                    <div class="flex justify-between mb-10">
-                        <h2 class="text-4xl font-bold">المنتجات</h2>
-                        <button onclick="showAddProductModal()" class="bg-cyan-500 hover:bg-cyan-600 text-slate-900 px-10 py-5 rounded-3xl font-bold">+ إضافة منتج</button>
-                    </div>
-                    <div id="products-grid" class="grid grid-cols-4 gap-8"></div>
-                </div>
-
-                <!-- Customers & Loyalty -->
-                <div id="customers" class="page">
-                    <div class="flex justify-between mb-10">
-                        <h2 class="text-4xl font-bold">العملاء وبرنامج الولاء</h2>
-                        <button onclick="showAddCustomerModal()" class="bg-emerald-500 hover:bg-emerald-600 px-10 py-5 rounded-3xl font-bold">+ إضافة عميل</button>
-                    </div>
-                    <div id="customers-list" class="grid grid-cols-3 gap-8"></div>
-                </div>
-
-                <!-- Reports -->
-                <div id="reports" class="page">
-                    <h2 class="text-4xl font-bold mb-8">التقارير اليومية والشهرية</h2>
-                    <div class="glass p-10 rounded-3xl">
-                        <canvas id="sales-chart" height="180"></canvas>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- Product Modal -->
-    <div id="product-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-        <div class="glass w-full max-w-lg rounded-3xl p-10">
-            <h3 class="text-2xl font-bold mb-8" id="modal-title">إضافة منتج</h3>
-            <input id="prod-name" placeholder="اسم المنتج" class="w-full bg-slate-800 border border-slate-600 rounded-3xl px-6 py-5 mb-4">
-            <input id="prod-price" type="number" placeholder="السعر" class="w-full bg-slate-800 border border-slate-600 rounded-3xl px-6 py-5 mb-4">
-            <input id="prod-stock" type="number" placeholder="الكمية" class="w-full bg-slate-800 border border-slate-600 rounded-3xl px-6 py-5 mb-4">
-            <input id="prod-image" type="text" placeholder="رابط الصورة" class="w-full bg-slate-800 border border-slate-600 rounded-3xl px-6 py-5 mb-8">
-            <button onclick="saveProduct()" class="w-full bg-cyan-500 py-6 rounded-3xl font-bold text-slate-900">حفظ</button>
-        </div>
-    </div>
-
-    <script>
-        // ==================== Users & Data ====================
-        const USERS = [
-            {id:1, username:"salman", password:"1234", name:"سلمان", role:"manager", position:"المدير"},
-            {id:2, username:"azoz", password:"1234", name:"عزوز", role:"cashier", position:"كاشير"}
-        ];
-
-        let currentUser = null;
-        let DATA = { products: [], customers: [], transactions: [] };
-        let cart = [];
-        let currentEditingProduct = null;
-
-        function login() {
-            const username = document.getElementById('username').value.trim().toLowerCase();
-            const password = document.getElementById('password').value;
-            const user = USERS.find(u => u.username === username && u.password === password);
-            if (user) {
-                currentUser = user;
-                localStorage.setItem('bqaalaProUser', JSON.stringify(user));
-                document.getElementById('login-page').classList.add('hidden');
-                document.getElementById('main-app').classList.remove('hidden');
-                document.getElementById('header-name').textContent = user.name;
-                document.getElementById('welcome-name').textContent = user.name;
-                document.getElementById('products-menu').style.display = user.role === 'manager' ? 'block' : 'none';
-                document.getElementById('admin-section').classList.toggle('hidden', user.role !== 'manager');
-                initSystem();
-            } else {
-                alert('بيانات خاطئة');
-            }
-        }
-
-        function logout() { location.reload(); }
-
-        function showPage(page) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(page).classList.add('active');
-            if (page === 'products') renderProducts();
-            if (page === 'customers') renderCustomers();
-            if (page === 'dashboard') renderDashboard();
-        }
-
-        function initSystem() {
-            const saved = localStorage.getItem('bqaalaProData');
-            if (saved) DATA = JSON.parse(saved);
-            updateDate();
-            renderDashboard();
-            renderProducts();
-            renderPosProducts();
-            renderCustomers();
-        }
-
-        function saveData() {
-            localStorage.setItem('bqaalaProData', JSON.stringify(DATA));
-        }
-
-        function updateDate() {
-            document.getElementById('current-date').textContent = new Date().toLocaleDateString('ar-SA', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
-        }
-
-        // Dashboard
-        function renderDashboard() {
-            const today = new Date().toISOString().split('T')[0];
-            const todayTrans = DATA.transactions.filter(t => t.date === today);
-            const totalSales = todayTrans.reduce((sum, t) => sum + (t.total || 0), 0);
-            document.getElementById('today-sales').textContent = totalSales + " ر.س";
-            document.getElementById('today-count').textContent = todayTrans.length;
-            document.getElementById('low-stock').textContent = DATA.products.filter(p => p.stock < 20).length;
-        }
-
-        // Products
-        function renderProducts() {
-            const container = document.getElementById('products-grid');
-            container.innerHTML = '';
-            DATA.products.forEach(p => {
-                const div = document.createElement('div');
-                div.className = 'glass rounded-3xl overflow-hidden product-card';
-                div.innerHTML = `
-                    <img src="${p.image || 'https://picsum.photos/id/870/400/250'}" class="w-full h-52 object-cover">
-                    <div class="p-6">
-                        <div class="font-bold">${p.name}</div>
-                        <div class="flex justify-between mt-4">
-                            <div class="text-3xl font-black text-cyan-400">${p.price} ر.س</div>
-                            <div>كمية: <span class="${p.stock < 20 ? 'text-red-400' : 'text-emerald-400'}">${p.stock}</span></div>
+                        <div class="flex justify-between items-center mt-10">
+                            <div class="text-xs text-slate-400">نشر بواسطة: ${ass.postedBy}</div>
+                            ${actionHTML}
                         </div>
-                        <div class="flex gap-3 mt-6">
-                            <button onclick="editProduct(${p.id})" class="flex-1 bg-cyan-500 py-3 rounded-2xl text-sm">تعديل</button>
-                            <button onclick="deleteProduct(${p.id})" class="flex-1 bg-red-600 py-3 rounded-2xl text-sm">حذف</button>
+                    </div>`
+                })
+                
+                html += `</div></div>`
+                main.innerHTML = html
+            }
+            
+            else if (page === 'my-points' && currentUser.role === 'student') {
+                main.innerHTML = `
+                <div class="max-w-2xl mx-auto text-center">
+                    <div class="text-8xl mb-6">🏆</div>
+                    <h1 class="text-6xl font-bold">${currentUser.points || 0} <span class="text-3xl text-emerald-400">نقطة</span></h1>
+                    <p class="text-2xl text-slate-400 mt-4">رصيد نقاطك حتى الآن</p>
+                    
+                    <div class="mt-16 bg-white/10 rounded-3xl p-8">
+                        <h3 class="text-xl mb-6 text-start">آخر الواجبات المسلمة</h3>
+                        <ul class="space-y-4 text-start">
+                            ${currentUser.completed && currentUser.completed.length > 0 
+                                ? currentUser.completed.map(id => {
+                                    const ass = assignments.find(a => a.id === id)
+                                    return ass ? `<li class="flex justify-between items-center bg-white/5 p-4 rounded-2xl"><span>${ass.title}</span><span class="text-emerald-400">+${ass.points}</span></li>` : ''
+                                }).join('') 
+                                : `<li class="text-slate-400">لا توجد واجبات مسلمة بعد</li>`}
+                        </ul>
+                    </div>
+                </div>`
+            }
+            
+            else if (page === 'post-assignment' && currentUser.role === 'teacher') {
+                main.innerHTML = `
+                <div class="max-w-2xl mx-auto">
+                    <h1 class="text-4xl font-bold mb-8">نشر واجب جديد</h1>
+                    <div class="bg-white/10 backdrop-blur-xl rounded-3xl p-10">
+                        <div class="space-y-8">
+                            <div>
+                                <label class="block text-sm mb-3 text-slate-300">عنوان الواجب</label>
+                                <input id="new-title" type="text" class="w-full bg-white/10 border border-white/30 rounded-2xl py-5 px-6 focus:outline-none focus:border-blue-400" placeholder="مثال: واجب الفيزياء">
+                            </div>
+                            <div>
+                                <label class="block text-sm mb-3 text-slate-300">وصف الواجب</label>
+                                <textarea id="new-desc" rows="5" class="w-full bg-white/10 border border-white/30 rounded-3xl py-5 px-6 focus:outline-none focus:border-blue-400 resize-none" placeholder="اكتب تفاصيل الواجب..."></textarea>
+                            </div>
+                            <div class="grid grid-cols-2 gap-8">
+                                <div>
+                                    <label class="block text-sm mb-3 text-slate-300">تاريخ التسليم</label>
+                                    <input id="new-due" type="date" value="2026-04-25" class="w-full bg-white/10 border border-white/30 rounded-2xl py-5 px-6 focus:outline-none focus:border-blue-400">
+                                </div>
+                                <div>
+                                    <label class="block text-sm mb-3 text-slate-300">عدد النقاط</label>
+                                    <input id="new-points" type="number" value="20" class="w-full bg-white/10 border border-white/30 rounded-2xl py-5 px-6 focus:outline-none focus:border-blue-400">
+                                </div>
+                            </div>
+                            
+                            <button onclick="publishNewAssignment()" 
+                                    class="w-full py-6 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-3xl text-2xl font-bold flex items-center justify-center gap-4 hover:shadow-2xl">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                نشر الواجب الآن
+                            </button>
                         </div>
                     </div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        function showAddProductModal() {
-            currentEditingProduct = null;
-            document.getElementById('modal-title').textContent = 'إضافة منتج جديد';
-            document.getElementById('product-modal').classList.remove('hidden');
-        }
-
-        function editProduct(id) {
-            currentEditingProduct = DATA.products.find(p => p.id === id);
-            document.getElementById('modal-title').textContent = 'تعديل المنتج';
-            document.getElementById('prod-name').value = currentEditingProduct.name;
-            document.getElementById('prod-price').value = currentEditingProduct.price;
-            document.getElementById('prod-stock').value = currentEditingProduct.stock;
-            document.getElementById('prod-image').value = currentEditingProduct.image || '';
-            document.getElementById('product-modal').classList.remove('hidden');
-        }
-
-        function saveProduct() {
-            const name = document.getElementById('prod-name').value.trim();
-            const price = parseFloat(document.getElementById('prod-price').value);
-            const stock = parseInt(document.getElementById('prod-stock').value);
-            const image = document.getElementById('prod-image').value || 'https://picsum.photos/id/870/400/250';
-
-            if (!name || !price) return alert('يرجى ملء الحقول المطلوبة');
-
-            if (currentEditingProduct) {
-                currentEditingProduct.name = name;
-                currentEditingProduct.price = price;
-                currentEditingProduct.stock = stock;
-                currentEditingProduct.image = image;
-            } else {
-                DATA.products.push({ id: Date.now(), name, price, stock, image });
+                </div>`
             }
-
-            saveData();
-            document.getElementById('product-modal').classList.add('hidden');
-            renderProducts();
-        }
-
-        function deleteProduct(id) {
-            if (confirm('حذف المنتج؟')) {
-                DATA.products = DATA.products.filter(p => p.id !== id);
-                saveData();
-                renderProducts();
-            }
-        }
-
-        // Customers & Loyalty
-        function renderCustomers() {
-            const container = document.getElementById('customers-list');
-            container.innerHTML = '';
-            DATA.customers.forEach(c => {
-                const div = document.createElement('div');
-                div.className = 'glass rounded-3xl p-8';
-                div.innerHTML = `
-                    <div class="font-bold text-xl">${c.name}</div>
-                    <div class="text-cyan-400">${c.phone}</div>
-                    <div class="mt-8 text-5xl font-black text-emerald-400">${c.points || 0} نقطة</div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        function showAddCustomerModal() {
-            const name = prompt("اسم العميل:");
-            const phone = prompt("رقم الجوال:");
-            if (name && phone) {
-                DATA.customers.push({id: Date.now(), name, phone, points: 100});
-                saveData();
-                renderCustomers();
-            }
-        }
-
-        // POS Functions
-        function renderPosProducts() {
-            const container = document.getElementById('pos-products');
-            container.innerHTML = '';
-            DATA.products.forEach(p => {
-                const div = document.createElement('div');
-                div.className = 'glass rounded-3xl overflow-hidden cursor-pointer';
-                div.innerHTML = `
-                    <img src="${p.image || 'https://picsum.photos/id/870/400/250'}" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <div>${p.name}</div>
-                        <div class="text-3xl font-black text-cyan-400 mt-3">${p.price} ر.س</div>
+            
+            else if (page === 'manage-users' && currentUser.role === 'principal') {
+                let tableHTML = `
+                <div class="max-w-6xl mx-auto">
+                    <div class="flex justify-between mb-8">
+                        <h1 class="text-4xl font-bold">إدارة الطلاب والمستخدمين</h1>
+                        <button onclick="showAddStudentModal()" 
+                                class="flex items-center gap-3 bg-gradient-to-r from-blue-600 to-cyan-500 px-8 rounded-3xl text-xl font-medium py-4 hover:scale-105">
+                            <i class="fa-solid fa-user-plus"></i>
+                            إضافة طالب جديد
+                        </button>
                     </div>
-                `;
-                div.onclick = () => addToCart(p);
-                container.appendChild(div);
-            });
-        }
-
-        function addToCart(product) {
-            const existing = cart.find(i => i.id === product.id);
-            if (existing) existing.qty++;
-            else cart.push({...product, qty: 1});
-            renderCart();
-        }
-
-        function renderCart() {
-            const container = document.getElementById('cart-items');
-            container.innerHTML = '';
-            let total = 0;
-            cart.forEach(item => {
-                total += item.price * item.qty;
-                const div = document.createElement('div');
-                div.className = 'flex justify-between bg-slate-800 p-5 rounded-3xl mb-4';
-                div.innerHTML = `<div>${item.name} × ${item.qty}</div><div class="font-bold">${(item.price*item.qty).toFixed(1)} ر.س</div>`;
-                container.appendChild(div);
-            });
-            document.getElementById('cart-total').textContent = total.toFixed(1) + " ر.س";
-        }
-
-        function checkout() {
-            if (cart.length === 0) return alert('السلة فارغة');
-            const total = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
-            const transaction = { id: 'INV-' + Date.now().toString().slice(-6), date: new Date().toISOString().split('T')[0], total, items: [...cart] };
-            DATA.transactions.push(transaction);
-            saveData();
-            cart.forEach(item => {
-                const prod = DATA.products.find(p => p.id === item.id);
-                if (prod) prod.stock -= item.qty;
-            });
-            printReceipt(transaction);
-            cart = [];
-            renderCart();
-            renderDashboard();
-            renderProducts();
-            alert(`تم البيع بنجاح!\nرقم الفاتورة: ${transaction.id}`);
-        }
-
-        function printReceipt(transaction) {
-            const win = window.open('', '_blank');
-            win.document.write(`<div style="width:340px;margin:auto;padding:25px;border:4px dashed #0ea5e9;background:white;color:black;font-family:Cairo,sans-serif;">
-                <h2 style="text-align:center">بقالة سلمان برو</h2>
-                <p style="text-align:center">رقم الفاتورة: ${transaction.id}</p>
-                <p style="text-align:center">التاريخ: ${transaction.date}</p>
-                <hr>
-                <p style="font-size:18px;font-weight:bold">الإجمالي: ${transaction.total} ر.س</p>
-            </div>`);
-            win.print();
-        }
-
-        // بدء النظام
-        window.onload = () => {
-            const savedUser = localStorage.getItem('bqaalaProUser');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                document.getElementById('login-page').classList.add('hidden');
-                document.getElementById('main-app').classList.remove('hidden');
-                document.getElementById('header-name').textContent = currentUser.name;
-                document.getElementById('welcome-name').textContent = currentUser.name;
-                initSystem();
+                    
+                    <table class="w-full bg-white/10 backdrop-blur-xl rounded-3xl overflow-hidden">
+                        <thead>
+                            <tr class="border-b border-white/10">
+                                <th class="py-6 px-8 text-start">الاسم</th>
+                                <th class="py-6 px-8 text-start">اسم المستخدم</th>
+                                <th class="py-6 px-8 text-start">الدور</th>
+                                <th class="py-6 px-8 text-start">النقاط</th>
+                                <th class="py-6 px-8 text-center">إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body" class="text-slate-300"></tbody>
+                    </table>
+                </div>`
+                
+                main.innerHTML = tableHTML
+                renderUsersTable()
             }
-        };
+            
+            else if (page === 'student-progress' && currentUser.role === 'guardian') {
+                main.innerHTML = `
+                <div class="max-w-6xl mx-auto">
+                    <h1 class="text-4xl font-bold mb-8">تقدم الطلاب</h1>
+                    <div class="grid grid-cols-2 gap-6">
+                        ${users.filter(u => u.role === 'student').map(student => `
+                        <div class="bg-white/10 backdrop-blur-xl rounded-3xl p-8">
+                            <div class="flex items-center gap-6">
+                                <div class="text-5xl">🎓</div>
+                                <div class="flex-1">
+                                    <div class="font-bold text-2xl">${student.name}</div>
+                                    <div class="text-emerald-400">${student.points || 0} نقطة</div>
+                                    <div class="h-2 bg-white/10 rounded-3xl mt-6 overflow-hidden">
+                                        <div class="h-full bg-emerald-400 w-3/4 rounded-3xl"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-8 text-sm text-slate-400">آخر واجب مسلم: الرياضيات</div>
+                        </div>`).join('')}
+                    </div>
+                </div>`
+            }
+        }
+        
+        function renderUsersTable() {
+            const tbody = document.getElementById('users-table-body')
+            if (!tbody) return
+            
+            let rows = ''
+            users.forEach(user => {
+                rows += `
+                <tr class="border-b border-white/10 hover:bg-white/5">
+                    <td class="py-6 px-8">${user.name}</td>
+                    <td class="py-6 px-8 font-medium">${user.username}</td>
+                    <td class="py-6 px-8">
+                        <span class="px-5 py-1 text-xs rounded-3xl ${user.role === 'student' ? 'bg-amber-400 text-black' : user.role === 'teacher' ? 'bg-emerald-400 text-black' : 'bg-blue-400 text-black'}">
+                            ${roleNames[user.role]}
+                        </span>
+                    </td>
+                    <td class="py-6 px-8 font-bold text-emerald-400">${user.role === 'student' ? (user.points || 0) : '—'}</td>
+                    <td class="py-6 px-8 text-center">
+                        <button onclick="deleteUser(${user.id}); event.stopImmediatePropagation()" class="text-red-400 hover:text-red-600 text-sm">حذف</button>
+                    </td>
+                </tr>`
+            })
+            tbody.innerHTML = rows
+        }
+        
+        // =============================================
+        // إضافة طالب جديد من قبل المدير
+        // =============================================
+        function showAddStudentModal() {
+            const modalContent = `
+            <div class="p-8">
+                <h2 class="text-3xl font-bold mb-8">إضافة طالب جديد</h2>
+                
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-slate-400 mb-2">اسم الطالب الكامل</label>
+                        <input id="modal-student-name" type="text" class="w-full px-6 py-5 bg-white/10 border border-white/30 rounded-2xl text-lg" placeholder="علي محمد الشمري">
+                    </div>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-slate-400 mb-2">اسم المستخدم</label>
+                            <input id="modal-student-username" type="text" class="w-full px-6 py-5 bg-white/10 border border-white/30 rounded-2xl text-lg" placeholder="طالب5">
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-2">كلمة المرور</label>
+                            <input id="modal-student-password" type="text" value="123" class="w-full px-6 py-5 bg-white/10 border border-white/30 rounded-2xl text-lg">
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-4 mt-10">
+                        <button onclick="hideModal()" class="flex-1 py-6 text-lg border border-white/30 rounded-3xl">إلغاء</button>
+                        <button onclick="addNewStudent()" class="flex-1 py-6 text-lg bg-gradient-to-r from-emerald-500 to-cyan-400 rounded-3xl">إضافة الطالب</button>
+                    </div>
+                </div>
+            </div>`
+            
+            const modalEl = document.getElementById('modal')
+            modalEl.querySelector('div').innerHTML = modalContent
+            modalEl.classList.remove('hidden')
+            modalEl.classList.add('flex')
+        }
+        
+        function addNewStudent() {
+            const name = document.getElementById('modal-student-name').value.trim()
+            const username = document.getElementById('modal-student-username').value.trim()
+            const password = document.getElementById('modal-student-password').value.trim()
+            
+            if (!name || !username) {
+                alert('يرجى ملء جميع الحقول')
+                return
+            }
+            
+            const newStudent = {
+                id: Date.now(),
+                username: username,
+                password: password || "123",
+                role: "student",
+                name: name,
+                points: 0,
+                completed: []
+            }
+            
+            users.push(newStudent)
+            saveUsers()
+            hideModal()
+            
+            // تحديث الجدول إذا كان مفتوحاً
+            renderUsersTable()
+            
+            alert(`✅ تم إضافة الطالب ${name} بنجاح\nاسم المستخدم: ${username}\nكلمة المرور: ${password}`)
+        }
+        
+        function deleteUser(id) {
+            if (confirm('حذف هذا المستخدم؟')) {
+                users = users.filter(u => u.id !== id)
+                saveUsers()
+                renderUsersTable()
+            }
+        }
+        
+        // =============================================
+        // نشر واجب جديد
+        // =============================================
+        function publishNewAssignment() {
+            const title = document.getElementById('new-title').value
+            const desc = document.getElementById('new-desc').value
+            const due = document.getElementById('new-due').value
+            const points = parseInt(document.getElementById('new-points').value)
+            
+            if (!title || !desc) {
+                alert('يرجى ملء العنوان والوصف')
+                return
+            }
+            
+            const newAssignment = {
+                id: Date.now(),
+                title: title,
+                description: desc,
+                dueDate: due,
+                points: points || 15,
+                postedBy: currentUser.username,
+                postedDate: new Date().toISOString().split('T')[0]
+            }
+            
+            assignments.unshift(newAssignment)
+            saveAssignments()
+            
+            alert('🎉 تم نشر الواجب بنجاح لجميع الطلاب!')
+            navigateTo('assignments')
+        }
+        
+        // =============================================
+        // تسليم واجب من قبل الطالب
+        // =============================================
+        window.submitAssignment = function(id) {
+            if (currentUser.role !== 'student') return
+            
+            if (!currentUser.completed) currentUser.completed = []
+            
+            if (currentUser.completed.includes(id)) {
+                alert('لقد سلمت هذا الواجب سابقاً')
+                return
+            }
+            
+            const ass = assignments.find(a => a.id === id)
+            if (!ass) return
+            
+            currentUser.completed.push(id)
+            currentUser.points = (currentUser.points || 0) + ass.points
+            
+            // تحديث قاعدة البيانات
+            const index = users.findIndex(u => u.id === currentUser.id)
+            if (index !== -1) users[index] = currentUser
+            
+            saveUsers()
+            localStorage.setItem('school_current_user', JSON.stringify(currentUser))
+            
+            alert(`✅ تم تسليم الواجب بنجاح!\nحصلت على +${ass.points} نقطة`)
+            
+            // إعادة تحميل صفحة الواجبات
+            navigateTo('assignments')
+        }
+        
+        // =============================================
+        // عرض تفاصيل واجب
+        // =============================================
+        window.viewAssignment = function(id) {
+            const ass = assignments.find(a => a.id === id)
+            if (!ass) return
+            
+            const modalContent = `
+            <div class="p-8 max-w-2xl">
+                <div class="flex justify-between">
+                    <h2 class="text-3xl font-bold">${ass.title}</h2>
+                    <div class="px-6 py-2 bg-emerald-400 text-black rounded-3xl text-sm font-medium flex items-center">${ass.points} نقطة</div>
+                </div>
+                <p class="text-slate-400 mt-2">تاريخ التسليم: <span class="font-semibold">${ass.dueDate}</span></p>
+                
+                <div class="mt-8 border border-white/20 rounded-3xl p-8 bg-white/5">
+                    <p class="leading-relaxed">${ass.description}</p>
+                </div>
+                
+                <div class="flex justify-end gap-4 mt-12">
+                    <button onclick="hideModal()" class="px-10 py-4 text-lg border border-white/30 rounded-3xl">إغلاق</button>
+                    ${currentUser.role === 'student' && !(currentUser.completed && currentUser.completed.includes(id)) 
+                        ? `<button onclick="submitAssignment(${id}); hideModal()" class="px-10 py-4 text-lg bg-emerald-500 rounded-3xl">تسليم الآن</button>` 
+                        : ''}
+                </div>
+            </div>`
+            
+            const modalEl = document.getElementById('modal')
+            modalEl.querySelector('div').innerHTML = modalContent
+            modalEl.classList.remove('hidden')
+            modalEl.classList.add('flex')
+        }
+        
+        // =============================================
+        // إشعارات
+        // =============================================
+        window.showNotifications = function() {
+            let html = `<div class="p-6"><h3 class="text-2xl font-bold mb-6">الإشعارات</h3>`
+            
+            notifications.forEach(n => {
+                html += `
+                <div class="flex gap-4 mb-6 last:mb-0">
+                    <div class="text-3xl">${n.icon}</div>
+                    <div class="flex-1">
+                        <div>${n.title}</div>
+                        <div class="text-xs text-slate-400">${n.time}</div>
+                    </div>
+                </div>`
+            })
+            
+            html += `</div>`
+            
+            const modalEl = document.getElementById('modal')
+            modalEl.querySelector('div').innerHTML = html
+            modalEl.classList.remove('hidden')
+            modalEl.classList.add('flex')
+        }
+        
+        // =============================================
+        // ملف شخصي بسيط
+        // =============================================
+        window.showProfile = function() {
+            const modalContent = `
+            <div class="p-8 text-center">
+                <div class="mx-auto w-24 h-24 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-3xl flex items-center justify-center text-6xl mb-6">${currentUser.name[0]}</div>
+                <h2 class="text-3xl font-bold">${currentUser.name}</h2>
+                <p class="text-blue-400">${roleNames[currentUser.role]}</p>
+                <p class="text-slate-400 mt-2">اسم المستخدم: <span class="font-mono">${currentUser.username}</span></p>
+                
+                ${currentUser.role === 'student' ? `<div class="mt-10 text-5xl font-bold text-emerald-400">${currentUser.points || 0} نقطة</div>` : ''}
+                
+                <button onclick="hideModal()" class="mt-12 px-14 py-4 rounded-3xl bg-white/10 text-lg">إغلاق</button>
+            </div>`
+            
+            const modalEl = document.getElementById('modal')
+            modalEl.querySelector('div').innerHTML = modalContent
+            modalEl.classList.remove('hidden')
+            modalEl.classList.add('flex')
+        }
+        
+        function hideModal() {
+            const modal = document.getElementById('modal')
+            modal.classList.add('hidden')
+            modal.classList.remove('flex')
+        }
+        
+        // =============================================
+        // تسجيل الخروج
+        // =============================================
+        window.logout = function() {
+            if (confirm('تسجيل الخروج من النظام؟')) {
+                localStorage.removeItem('school_current_user')
+                currentUser = null
+                document.getElementById('dashboard-screen').classList.add('hidden')
+                document.getElementById('login-screen').classList.remove('hidden')
+                // إعادة تعيين النموذج
+                document.getElementById('login-form').reset()
+            }
+        }
+        
+        // =============================================
+        // تشغيل النظام عند تحميل الصفحة
+        // =============================================
+        window.onload = function() {
+            loadInitialData()
+            
+            // ربط نموذج تسجيل الدخول
+            const loginForm = document.getElementById('login-form')
+            loginForm.addEventListener('submit', handleLogin)
+            
+            // إذا كان المستخدم مسجلاً سابقاً
+            if (currentUser) {
+                document.getElementById('login-screen').classList.add('hidden')
+                document.getElementById('dashboard-screen').classList.remove('hidden')
+                renderFullDashboard()
+            }
+            
+            console.log('%c✅ نظام المدرسة الذكي جاهز 100%!', 'color:#22d3ee; font-size:18px; font-weight:bold')
+            console.log('🚀 يمكنك رفعه الآن على GitHub Pages')
+        }
     </script>
 </body>
-</html>
 </html>
