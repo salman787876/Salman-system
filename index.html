@@ -431,3 +431,533 @@
     </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بقالة سلمان برو - النظام المتطور</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;900&display=swap');
+        * { font-family: 'Cairo', sans-serif; }
+        body { background: #0f172a; color: #e2e8f0; }
+        .glass { background: rgba(15,23,42,0.95); backdrop-filter: blur(12px); border: 1px solid rgba(34,211,238,0.2); }
+        .nav-item { transition: all 0.3s; }
+        .nav-item:hover { background: #22d3ee; color: #0f172a; transform: translateX(-8px); }
+        .page { display: none; }
+        .page.active { display: block; }
+        .product-card:hover { transform: translateY(-10px); box-shadow: 0 20px 25px -5px rgb(34 211 238 / 0.3); }
+        .receipt { width: 360px; background: white; color: black; padding: 30px; border: 4px dashed #0ea5e9; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+    </style>
+</head>
+<body>
+
+    <!-- تسجيل الدخول -->
+    <div id="login-page" class="fixed inset-0 bg-[#0f172a] flex items-center justify-center z-50">
+        <div class="glass rounded-3xl p-12 w-full max-w-md">
+            <div class="text-center mb-10">
+                <div class="mx-auto w-24 h-24 bg-gradient-to-br from-cyan-400 to-teal-500 rounded-3xl flex items-center justify-center text-6xl">🛒</div>
+                <h1 class="text-4xl font-black text-white mt-6">بقالة سلمان برو</h1>
+                <p class="text-cyan-300">نظام إدارة البقالة المتطور</p>
+            </div>
+            <input id="username" type="text" value="salman" placeholder="اسم المستخدم" class="w-full bg-slate-800 border border-slate-600 rounded-3xl px-6 py-5 mb-4 text-lg">
+            <input id="password" type="password" value="1234" placeholder="كلمة المرور" class="w-full bg-slate-800 border border-slate-600 rounded-3xl px-6 py-5 mb-8 text-lg">
+            <button onclick="login()" class="w-full bg-gradient-to-r from-cyan-500 to-teal-500 py-6 rounded-3xl text-white text-2xl font-bold">تسجيل الدخول</button>
+        </div>
+    </div>
+
+    <!-- النظام الرئيسي -->
+    <div id="main-app" class="hidden flex flex-col h-screen">
+
+        <header class="bg-slate-900 border-b border-slate-700 px-8 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-6">
+                <button onclick="logout()" class="bg-red-900/60 hover:bg-red-900 px-6 py-3 rounded-3xl flex items-center gap-2 text-red-300">
+                    <i class="fa-solid fa-right-from-bracket"></i> خروج
+                </button>
+                <div class="bg-slate-800 px-6 py-3 rounded-3xl flex items-center gap-3">
+                    <i class="fa-solid fa-user text-cyan-400"></i>
+                    <div>
+                        <div id="header-name" class="font-bold"></div>
+                        <div id="header-role" class="text-xs text-slate-400"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-3xl font-black text-white flex items-center gap-3">
+                <i class="fa-solid fa-store text-cyan-400"></i> بقالة سلمان برو
+            </div>
+            <div class="flex items-center gap-6">
+                <div id="current-date" class="font-medium"></div>
+                <button onclick="toggleLanguage()" class="bg-slate-800 px-5 py-2 rounded-3xl">🌐 اللغة</button>
+            </div>
+        </header>
+
+        <div class="flex flex-1 overflow-hidden">
+
+            <!-- Sidebar -->
+            <div class="w-72 bg-slate-900 border-l border-slate-700 p-6 flex flex-col">
+                <div class="flex-1 space-y-2">
+                    <div onclick="showPage('dashboard')" class="nav-item active flex items-center gap-4 px-6 py-5 rounded-3xl cursor-pointer text-white font-medium">
+                        <i class="fa-solid fa-gauge-high w-6"></i> لوحة التحكم
+                    </div>
+                    <div onclick="showPage('pos')" class="nav-item flex items-center gap-4 px-6 py-5 rounded-3xl cursor-pointer text-white font-medium">
+                        <i class="fa-solid fa-cash-register w-6"></i> نقطة البيع
+                    </div>
+                    <div onclick="showPage('products')" class="nav-item flex items-center gap-4 px-6 py-5 rounded-3xl cursor-pointer text-white font-medium" id="products-menu">
+                        <i class="fa-solid fa-boxes-stacked w-6"></i> المنتجات
+                    </div>
+                    <div onclick="showPage('customers')" class="nav-item flex items-center gap-4 px-6 py-5 rounded-3xl cursor-pointer text-white font-medium">
+                        <i class="fa-solid fa-users w-6"></i> العملاء والولاء
+                    </div>
+                    <div onclick="showPage('reports')" class="nav-item flex items-center gap-4 px-6 py-5 rounded-3xl cursor-pointer text-white font-medium">
+                        <i class="fa-solid fa-chart-line w-6"></i> التقارير
+                    </div>
+                    <div onclick="showPage('invoices')" class="nav-item flex items-center gap-4 px-6 py-5 rounded-3xl cursor-pointer text-white font-medium">
+                        <i class="fa-solid fa-file-invoice w-6"></i> الفواتير
+                    </div>
+                </div>
+
+                <div id="admin-section" class="hidden border-t pt-8">
+                    <div onclick="showPage('users-management')" class="nav-item flex items-center gap-4 px-6 py-5 rounded-3xl cursor-pointer text-white font-medium">
+                        <i class="fa-solid fa-users-gear w-6"></i> إدارة الموظفين
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="flex-1 overflow-auto p-10 bg-slate-950">
+
+                <!-- Dashboard -->
+                <div id="dashboard" class="page active">
+                    <h1 class="text-5xl font-black">مرحباً <span id="welcome-name" class="text-cyan-400"></span></h1>
+                    <div class="grid grid-cols-4 gap-6 mt-12">
+                        <div class="glass p-8 rounded-3xl">
+                            <p class="text-cyan-400">مبيعات اليوم</p>
+                            <p id="today-sales" class="text-6xl font-black mt-4">0 ر.س</p>
+                        </div>
+                        <div class="glass p-8 rounded-3xl">
+                            <p class="text-orange-400">فواتير اليوم</p>
+                            <p id="today-count" class="text-6xl font-black mt-4">0</p>
+                        </div>
+                        <div class="glass p-8 rounded-3xl">
+                            <p class="text-red-400">مخزون منخفض</p>
+                            <p id="low-stock" class="text-6xl font-black text-red-400 mt-4">0</p>
+                        </div>
+                        <div class="glass p-8 rounded-3xl">
+                            <p class="text-emerald-400">نقاط الولاء</p>
+                            <p id="total-points" class="text-6xl font-black text-emerald-400 mt-4">1240</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Point of Sale -->
+                <div id="pos" class="page">
+                    <h2 class="text-4xl font-bold mb-8">نقطة البيع</h2>
+                    <div class="grid grid-cols-12 gap-8">
+                        <div class="col-span-7 glass rounded-3xl p-8">
+                            <input id="pos-search" placeholder="ابحث عن منتج..." class="w-full bg-slate-800 border border-slate-600 rounded-3xl px-8 py-6 text-xl mb-8" onkeyup="filterPosProducts()">
+                            <div id="pos-products" class="grid grid-cols-3 gap-6"></div>
+                        </div>
+                        <div class="col-span-5 glass rounded-3xl p-8 flex flex-col">
+                            <h3 class="text-2xl font-bold mb-6">السلة</h3>
+                            <div id="cart-items" class="flex-1 overflow-auto"></div>
+                            <div class="pt-8">
+                                <div class="flex justify-between text-4xl font-black text-cyan-400">
+                                    <span>الإجمالي</span>
+                                    <span id="cart-total">0 ر.س</span>
+                                </div>
+                                <button onclick="checkout()" class="mt-10 w-full bg-gradient-to-r from-cyan-500 to-teal-500 py-7 rounded-3xl text-2xl font-bold">إنهاء البيع وطباعة الفاتورة</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products -->
+                <div id="products" class="page">
+                    <div class="flex justify-between mb-10">
+                        <h2 class="text-4xl font-bold">إدارة المنتجات</h2>
+                        <button onclick="showAddProductModal()" class="bg-cyan-500 hover:bg-cyan-600 text-slate-900 px-10 py-5 rounded-3xl font-bold">+ إضافة منتج</button>
+                    </div>
+                    <div id="products-grid" class="grid grid-cols-4 gap-8"></div>
+                </div>
+
+                <!-- Customers & Loyalty -->
+                <div id="customers" class="page">
+                    <div class="flex justify-between mb-10">
+                        <h2 class="text-4xl font-bold">العملاء وبرنامج الولاء</h2>
+                        <button onclick="showAddCustomerModal()" class="bg-emerald-500 hover:bg-emerald-600 px-10 py-5 rounded-3xl font-bold">+ إضافة عميل</button>
+                    </div>
+                    <div id="customers-list" class="grid grid-cols-3 gap-8"></div>
+                </div>
+
+                <!-- Reports -->
+                <div id="reports" class="page">
+                    <h2 class="text-4xl font-bold mb-8">التقارير المتقدمة</h2>
+                    <div class="glass p-10 rounded-3xl">
+                        <canvas id="sales-chart" height="180"></canvas>
+                    </div>
+                </div>
+
+                <!-- Invoices -->
+                <div id="invoices" class="page">
+                    <h2 class="text-4xl font-bold mb-8">جميع الفواتير</h2>
+                    <div id="invoices-list" class="space-y-4"></div>
+                </div>
+
+                <!-- Users Management (Manager only) -->
+                <div id="users-management" class="page">
+                    <h2 class="text-4xl font-bold mb-8">إدارة الموظفين</h2>
+                    <div class="glass p-8 rounded-3xl">
+                        <p class="text-cyan-400">هنا يمكن للمدير إدارة الموظفين (جاهز للتوسع)</p>
+                        <button onclick="alert('تمت إضافة موظف جديد (محاكاة)')" class="mt-6 bg-cyan-500 px-8 py-4 rounded-3xl">إضافة موظف جديد</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div id="product-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+        <div class="glass w-full max-w-lg rounded-3xl p-10">
+            <h3 class="text-2xl font-bold mb-8 text-white" id="modal-title">إضافة منتج جديد</h3>
+            <input id="prod-name" placeholder="اسم المنتج" class="w-full bg-slate-800 border border-slate-600 rounded-3xl px-6 py-5 mb-4 text-white">
+            <input id="prod-price" type="number" placeholder="السعر" class="w-full bg-slate-800 border border-slate-600 rounded-3xl px-6 py-5 mb-4 text-white">
+            <input id="prod-stock" type="number" placeholder="الكمية" class="w-full bg-slate-800 border border-slate-600 rounded-3xl px-6 py-5 mb-4 text-white">
+            <input id="prod-image" type="text" placeholder="رابط الصورة" class="w-full bg-slate-800 border border-slate-600 rounded-3xl px-6 py-5 mb-8 text-white">
+            <button onclick="saveProduct()" class="w-full bg-cyan-500 py-6 rounded-3xl font-bold text-slate-900">حفظ المنتج</button>
+        </div>
+    </div>
+
+    <script>
+        // ==================== Users & Data ====================
+        const USERS = [
+            {id:1, username:"salman", password:"1234", name:"سلمان", role:"manager", position:"المدير العام"},
+            {id:2, username:"azoz", password:"1234", name:"عزوز", role:"cashier", position:"كاشير"}
+        ];
+
+        let currentUser = null;
+        let DATA = {
+            products: [],
+            customers: [],
+            transactions: [],
+            employees: []
+        };
+        let cart = [];
+        let currentEditingProduct = null;
+
+        function login() {
+            const username = document.getElementById('username').value.trim().toLowerCase();
+            const password = document.getElementById('password').value;
+            const user = USERS.find(u => u.username === username && u.password === password);
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('bqaalaProUser', JSON.stringify(user));
+                document.getElementById('login-page').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+                document.getElementById('header-name').textContent = user.name;
+                document.getElementById('welcome-name').textContent = user.name;
+
+                document.getElementById('products-menu').style.display = user.role === 'manager' ? 'block' : 'none';
+                document.getElementById('admin-section').classList.toggle('hidden', user.role !== 'manager');
+
+                initSystem();
+            } else {
+                alert('بيانات الدخول غير صحيحة');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('bqaalaProUser');
+            location.reload();
+        }
+
+        function showPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(page).classList.add('active');
+            if (page === 'products') renderProducts();
+            if (page === 'customers') renderCustomers();
+            if (page === 'dashboard') renderDashboard();
+            if (page === 'reports') renderMonthlyReport();
+            if (page === 'invoices') renderInvoices();
+        }
+
+        function initSystem() {
+            const saved = localStorage.getItem('bqaalaProData');
+            if (saved) DATA = JSON.parse(saved);
+            updateDate();
+            renderDashboard();
+            renderProducts();
+            renderPosProducts();
+            renderCustomers();
+            renderInvoices();
+        }
+
+        function saveData() {
+            localStorage.setItem('bqaalaProData', JSON.stringify(DATA));
+        }
+
+        function updateDate() {
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString('ar-SA', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+        }
+
+        // ==================== Dashboard ====================
+        function renderDashboard() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayTrans = DATA.transactions.filter(t => t.date === today);
+            const totalSales = todayTrans.reduce((sum, t) => sum + (t.total || 0), 0);
+
+            document.getElementById('today-sales').textContent = totalSales + " ر.س";
+            document.getElementById('today-count').textContent = todayTrans.length;
+            document.getElementById('low-stock').textContent = DATA.products.filter(p => p.stock < 20).length;
+        }
+
+        // ==================== Products ====================
+        function renderProducts() {
+            const container = document.getElementById('products-grid');
+            container.innerHTML = '';
+            DATA.products.forEach(p => {
+                const div = document.createElement('div');
+                div.className = 'glass rounded-3xl overflow-hidden product-card';
+                div.innerHTML = `
+                    <img src="${p.image || 'https://picsum.photos/id/870/400/250'}" class="w-full h-52 object-cover">
+                    <div class="p-6">
+                        <div class="font-bold">${p.name}</div>
+                        <div class="flex justify-between mt-4">
+                            <div class="text-3xl font-black text-cyan-400">${p.price} ر.س</div>
+                            <div>كمية: <span class="${p.stock < 20 ? 'text-red-400' : 'text-emerald-400'}">${p.stock}</span></div>
+                        </div>
+                        <div class="flex gap-3 mt-6">
+                            <button onclick="editProduct(${p.id})" class="flex-1 bg-cyan-500 py-3 rounded-2xl text-sm">تعديل</button>
+                            <button onclick="deleteProduct(${p.id})" class="flex-1 bg-red-600 py-3 rounded-2xl text-sm">حذف</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function showAddProductModal() {
+            currentEditingProduct = null;
+            document.getElementById('modal-title').textContent = 'إضافة منتج جديد';
+            document.getElementById('product-modal').classList.remove('hidden');
+        }
+
+        function editProduct(id) {
+            if (currentUser.role !== 'manager') return alert('لا تملك صلاحية التعديل');
+            currentEditingProduct = DATA.products.find(p => p.id === id);
+            document.getElementById('modal-title').textContent = 'تعديل المنتج';
+            document.getElementById('prod-name').value = currentEditingProduct.name;
+            document.getElementById('prod-price').value = currentEditingProduct.price;
+            document.getElementById('prod-stock').value = currentEditingProduct.stock;
+            document.getElementById('prod-image').value = currentEditingProduct.image || '';
+            document.getElementById('product-modal').classList.remove('hidden');
+        }
+
+        function saveProduct() {
+            const name = document.getElementById('prod-name').value.trim();
+            const price = parseFloat(document.getElementById('prod-price').value);
+            const stock = parseInt(document.getElementById('prod-stock').value);
+            const image = document.getElementById('prod-image').value || 'https://picsum.photos/id/870/400/250';
+
+            if (!name || !price) return alert('يرجى ملء الحقول');
+
+            if (currentEditingProduct) {
+                currentEditingProduct.name = name;
+                currentEditingProduct.price = price;
+                currentEditingProduct.stock = stock;
+                currentEditingProduct.image = image;
+            } else {
+                DATA.products.push({ id: Date.now(), name, price, stock, image });
+            }
+
+            saveData();
+            document.getElementById('product-modal').classList.add('hidden');
+            renderProducts();
+        }
+
+        function deleteProduct(id) {
+            if (currentUser.role !== 'manager') return alert('لا تملك صلاحية الحذف');
+            if (confirm('حذف المنتج؟')) {
+                DATA.products = DATA.products.filter(p => p.id !== id);
+                saveData();
+                renderProducts();
+            }
+        }
+
+        // ==================== POS ====================
+        function renderPosProducts() {
+            const container = document.getElementById('pos-products');
+            container.innerHTML = '';
+            DATA.products.forEach(p => {
+                if (p.stock > 0) {
+                    const div = document.createElement('div');
+                    div.className = 'glass rounded-3xl overflow-hidden cursor-pointer';
+                    div.innerHTML = `
+                        <img src="${p.image || 'https://picsum.photos/id/870/400/250'}" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div>${p.name}</div>
+                            <div class="text-3xl font-black text-cyan-400 mt-3">${p.price} ر.س</div>
+                        </div>
+                    `;
+                    div.onclick = () => addToCart(p);
+                    container.appendChild(div);
+                }
+            });
+        }
+
+        function addToCart(product) {
+            const existing = cart.find(i => i.id === product.id);
+            if (existing) existing.qty++;
+            else cart.push({...product, qty: 1});
+            renderCart();
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-items');
+            container.innerHTML = '';
+            let total = 0;
+            cart.forEach(item => {
+                total += item.price * item.qty;
+                const div = document.createElement('div');
+                div.className = 'flex justify-between bg-slate-800 p-5 rounded-3xl mb-4';
+                div.innerHTML = `<div>${item.name} × ${item.qty}</div><div class="font-bold">${(item.price*item.qty).toFixed(1)} ر.س</div>`;
+                container.appendChild(div);
+            });
+            document.getElementById('cart-total').textContent = total.toFixed(1) + " ر.س";
+        }
+
+        function checkout() {
+            if (cart.length === 0) return alert('السلة فارغة');
+            const total = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+
+            const transaction = {
+                id: 'INV-' + Date.now().toString().slice(-6),
+                date: new Date().toISOString().split('T')[0],
+                total: total,
+                items: [...cart],
+                cashier: currentUser.name
+            };
+
+            DATA.transactions.push(transaction);
+
+            // تحديث المخزون
+            cart.forEach(item => {
+                const prod = DATA.products.find(p => p.id === item.id);
+                if (prod) prod.stock -= item.qty;
+            });
+
+            // إضافة نقاط ولاء (محاكاة)
+            if (DATA.customers.length > 0) {
+                DATA.customers[0].points += Math.floor(total / 10);
+            }
+
+            saveData();
+            printReceipt(transaction);
+            cart = [];
+            renderCart();
+            renderDashboard();
+            renderProducts();
+            renderCustomers();
+
+            alert(`✅ تم إكمال البيع بنجاح!\nرقم الفاتورة: ${transaction.id}\nالمبلغ: ${total} ر.س\nتم إرسال إشعار واتساب (محاكاة)`);
+        }
+
+        function printReceipt(transaction) {
+            const win = window.open('', '_blank');
+            win.document.write(`
+                <div style="width:360px; margin:auto; padding:30px; border:4px dashed #0ea5e9; background:white; color:black; font-family:Cairo,sans-serif;">
+                    <h2 style="text-align:center; font-size:24px;">بقالة سلمان برو</h2>
+                    <p style="text-align:center;">رقم الفاتورة: ${transaction.id}</p>
+                    <p style="text-align:center;">التاريخ: ${transaction.date}</p>
+                    <p style="text-align:center;">الكاشير: ${transaction.cashier}</p>
+                    <hr style="margin:15px 0;">
+                    <p style="font-size:20px; font-weight:bold; text-align:right;">الإجمالي: ${transaction.total} ر.س</p>
+                </div>
+            `);
+            win.print();
+        }
+
+        // ==================== Customers & Loyalty ====================
+        function renderCustomers() {
+            const container = document.getElementById('customers-list');
+            container.innerHTML = '';
+            DATA.customers.forEach(c => {
+                const div = document.createElement('div');
+                div.className = 'glass rounded-3xl p-8';
+                div.innerHTML = `
+                    <div class="font-bold text-xl">${c.name}</div>
+                    <div class="text-cyan-400">${c.phone}</div>
+                    <div class="mt-8 text-5xl font-black text-emerald-400">${c.points || 0} نقطة</div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function showAddCustomerModal() {
+            const name = prompt("اسم العميل الكامل:");
+            const phone = prompt("رقم الجوال:");
+            if (name && phone) {
+                DATA.customers.push({id: Date.now(), name, phone, points: 50});
+                saveData();
+                renderCustomers();
+            }
+        }
+
+        // ==================== Reports ====================
+        function renderMonthlyReport() {
+            const ctx = document.getElementById('sales-chart');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['يناير', 'فبراير', 'مارس', 'أبريل'],
+                    datasets: [{
+                        label: 'المبيعات (ر.س)',
+                        data: [12500, 18900, 23400, 15600],
+                        backgroundColor: '#22d3ee'
+                    }]
+                },
+                options: { responsive: true }
+            });
+        }
+
+        // ==================== Invoices ====================
+        function renderInvoices() {
+            const container = document.getElementById('invoices-list');
+            container.innerHTML = '';
+            DATA.transactions.slice().reverse().forEach(t => {
+                const div = document.createElement('div');
+                div.className = 'glass rounded-3xl p-6 flex justify-between items-center';
+                div.innerHTML = `
+                    <div>
+                        <span class="font-bold text-cyan-400">${t.id}</span> - ${t.date}
+                    </div>
+                    <div class="font-bold">${t.total} ر.س</div>
+                    <button onclick="printReceiptFromId('${t.id}')" class="bg-cyan-500 px-6 py-3 rounded-2xl">طباعة</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function printReceiptFromId(id) {
+            const trans = DATA.transactions.find(t => t.id === id);
+            if (trans) printReceipt(trans);
+        }
+
+        // بدء النظام
+        window.onload = () => {
+            const savedUser = localStorage.getItem('bqaalaProUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                document.getElementById('login-page').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+                document.getElementById('header-name').textContent = currentUser.name;
+                document.getElementById('welcome-name').textContent = currentUser.name;
+                initSystem();
+            }
+        };
+    </script>
+</body>
+</html>
