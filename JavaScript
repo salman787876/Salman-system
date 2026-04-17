@@ -1,1 +1,65 @@
+let products = [
+    { name: "حليب", price: 5 },
+    { name: "خبز", price: 2 },
+    { name: "عصير", price: 3 },
+    { name: "شيبس", price: 4 }
+];
 
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+function renderProducts() {
+    let list = document.getElementById("productList");
+    list.innerHTML = "";
+
+    products.forEach(p => {
+        let div = document.createElement("div");
+        div.className = "product";
+        div.innerHTML = `${p.name} - ${p.price} ريال`;
+        div.onclick = () => addToCart(p);
+        list.appendChild(div);
+    });
+}
+
+function addToCart(product) {
+    cart.push(product);
+    saveCart();
+    renderCart();
+}
+
+function renderCart() {
+    let items = document.getElementById("cartItems");
+    items.innerHTML = "";
+
+    let total = 0;
+
+    cart.forEach((item, index) => {
+        total += item.price;
+
+        let div = document.createElement("div");
+        div.innerHTML = `${item.name} - ${item.price} ريال 
+        <button onclick="removeItem(${index})">❌</button>`;
+        items.appendChild(div);
+    });
+
+    document.getElementById("total").innerText = `الإجمالي: ${total} ريال`;
+}
+
+function removeItem(index) {
+    cart.splice(index, 1);
+    saveCart();
+    renderCart();
+}
+
+function saveCart() {
+    localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+function checkout() {
+    alert("تمت الطباعة (وهمية 😎)");
+    cart = [];
+    saveCart();
+    renderCart();
+}
+
+renderProducts();
+renderCart();
