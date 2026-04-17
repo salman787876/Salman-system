@@ -1,1 +1,53 @@
+body {
+    margin: 0;
+    font-family: sans-serif;
+    background: #1e1e1e;
+    color: white;
+}
 
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.products, .cart {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.products {
+    background: #2a2a2a;
+}
+
+.cart {
+    background: #1e1e1e;
+    border-left: 2px solid #ff8800;
+}
+
+h2 {
+    color: #ff8800;
+}
+
+.product {
+    background: #333;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.product:hover {
+    background: #444;
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    background: #ff8800;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+}
